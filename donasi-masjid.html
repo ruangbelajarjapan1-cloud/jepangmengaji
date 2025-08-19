@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="id" data-theme="light" id="top">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Donasi Masjid — Jepang Mengaji</title>
+  <meta name="description" content="Halaman resmi Donasi Masjid & Musholla. Rekening, cara donasi, dan konfirmasi WhatsApp." />
+  <link rel="icon" href="jm.jpeg" />
+  <style>
+    :root{--bg:#fff;--bg-soft:#f8fafc;--text:#0f172a;--muted:#475569;--card:#fff;--border:#e2e8f0;--primary:#3b82f6;--shadow:0 10px 25px rgba(2,6,23,.08)}
+    [data-theme="dark"]{--bg:#0f172a;--bg-soft:#111827;--text:#e5e7eb;--muted:#94a3b8;--card:#111827;--border:#1f2937;--shadow:0 10px 30px rgba(0,0,0,.25)}
+    body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Inter,Roboto,Arial,sans-serif;color:var(--text);background:var(--bg)}
+    .container{max-width:880px;margin:0 auto;padding:1rem}
+    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.6rem .9rem;border:1px solid var(--border);border-radius:.7rem;background:var(--card);cursor:pointer}
+    .btn.primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+    .badge{padding:.1rem .4rem;font-size:.75rem;background:rgba(148,163,184,.25);border:1px solid var(--border);border-radius:.4rem}
+    .muted{color:var(--muted)}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:1rem;box-shadow:var(--shadow)}
+    .card>.p{padding:1rem}
+    .section{padding:1.5rem 0}
+    .list{line-height:1.8;margin:.3rem 0}
+    .rekening{display:grid;gap:.6rem}
+    @media(min-width:680px){.rekening{grid-template-columns:1fr 1fr}}
+    .input{width:100%;padding:.6rem .8rem;border:1px solid var(--border);border-radius:.6rem;background:var(--card);color:var(--text)}
+    header.top{position:sticky;top:0;background:color-mix(in oklab,var(--bg) 85%, transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);z-index:10}
+    header.top .inner{display:flex;align-items:center;gap:.8rem;justify-content:space-between;padding:.6rem 0}
+    .logo{height:36px;border-radius:.4rem}
+  </style>
+</head>
+<body>
+<header class="top">
+  <div class="container inner">
+    <div style="display:flex;align-items:center;gap:.6rem">
+      <img class="logo" src="jm.jpeg" alt="Jepang Mengaji" />
+      <strong>Jepang Mengaji</strong>
+      <span class="badge">Donasi Masjid</span>
+    </div>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+      <a class="btn" href="index.html#donasi">⬅️ Kembali</a>
+      <a class="btn" href="#cara">🔎 Cara Donasi</a>
+      <a class="btn primary" href="#rekening">💳 Rekening</a>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <section class="section">
+    <h1>Donasi Masjid & Musholla</h1>
+    <p class="muted">Untuk renovasi/operasional: sewa, listrik, kebersihan, peralatan, program pendidikan, dan kegiatan sosial.</p>
+  </section>
+
+  <section id="rekening" class="section card">
+    <div class="p">
+      <h2>Nomor Rekening Resmi</h2>
+      <p class="muted">Silakan transfer ke salah satu rekening di bawah ini. <em>Mohon tulis berita transfer: “Donasi Masjid”.</em></p>
+
+      <div class="rekening">
+        <!-- GANTI DATA RESMI -->
+        <div class="card"><div class="p">
+          <strong>BCA</strong><br/>
+          a.n. <em>Jepang Mengaji</em><br/>
+          <span id="rek-bca-m">0987654321</span><br/>
+          <div style="margin-top:.5rem;display:flex;gap:.5rem;flex-wrap:wrap">
+            <button class="btn" data-copy="#rek-bca-m">📋 Salin</button>
+            <a class="btn" href="https://wa.me/6281211111111?text=Saya%20sudah%20transfer%20Donasi%20Masjid%20ke%20BCA%200987654321" target="_blank" rel="noopener">✅ Konfirmasi WA</a>
+          </div>
+        </div></div>
+
+        <div class="card"><div class="p">
+          <strong>MUFG (JP)</strong><br/>
+          a.n. <em>Jepang Mengaji</em><br/>
+          <span id="rek-mufg-m">000-7654321</span><br/>
+          <div style="margin-top:.5rem;display:flex;gap:.5rem;flex-wrap:wrap">
+            <button class="btn" data-copy="#rek-mufg-m">📋 Salin</button>
+            <a class="btn" href="https://wa.me/6281211111111?text=Saya%20sudah%20transfer%20Donasi%20Masjid%20ke%20MUFG%20000-7654321" target="_blank" rel="noopener">✅ Konfirmasi WA</a>
+          </div>
+        </div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="cara" class="section card">
+    <div class="p">
+      <h2>Cara Donasi</h2>
+      <ol class="list">
+        <li>Transfer ke salah satu rekening di atas.</li>
+        <li>Simpan bukti transfer.</li>
+        <li>Konfirmasi via WhatsApp dengan mengirim:
+          <ul class="list" style="margin-left:1rem">
+            <li>Nama</li>
+            <li>Nominal</li>
+            <li>Tanggal transfer</li>
+            <li>Rekening tujuan (BCA / MUFG)</li>
+            <li>Foto bukti transfer</li>
+          </ul>
+        </li>
+      </ol>
+      <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.6rem">
+        <a class="btn" href="https://wa.me/6281211111111?text=Assalamu%27alaikum%2C%20saya%20ingin%20konfirmasi%20Donasi%20Masjid" target="_blank" rel="noopener">📲 Hubungi Panitia (WA)</a>
+        <a class="btn" href="mailto:panitia@jepangmengaji.org?subject=Konfirmasi%20Donasi%20Masjid">✉️ Email Panitia</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section card">
+    <div class="p">
+      <h2>FAQ Singkat</h2>
+      <details><summary>Apakah donasi bisa dicicil?</summary><p class="muted">Bisa. Sampaikan rencana Anda saat konfirmasi agar kami catat periodenya.</p></details>
+      <details><summary>Apakah ada laporan?</summary><p class="muted">Ringkasan pemasukan & pengeluaran dipublikasikan berkala di situs/kanal resmi.</p></details>
+    </div>
+  </section>
+
+  <section class="section" style="text-align:center">
+    <a class="btn" href="index.html#donasi">⬅️ Kembali ke Halaman Utama</a>
+  </section>
+</main>
+
+<script>
+  document.querySelectorAll('[data-copy]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const sel=btn.getAttribute('data-copy');
+      const text=document.querySelector(sel)?.textContent?.trim()||'';
+      navigator.clipboard.writeText(text).then(()=>{
+        btn.textContent='✅ Disalin';
+        setTimeout(()=>btn.textContent='📋 Salin',1200);
+      });
+    });
+  });
+</script>
+</body>
+</html>
