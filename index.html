@@ -1,45 +1,54 @@
 <!doctype html>
-<html lang="id">
+<html lang="id" data-theme="light" id="top">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Jepang Mengaji — Mengaji, Berjejaring, Berkontribusi</title>
+  <meta name="description" content="Artikel keislaman, info kajian, live YouTube, dan donasi kegiatan dakwah di Jepang (JST)." />
   <link rel="icon" href="jm.jpeg" />
+  <script>(function(){try{var t=localStorage.getItem('jm-theme'); if(t) document.documentElement.setAttribute('data-theme', t);}catch(e){}})();</script>
   <style>
-    :root {
-      --primary:#3b82f6; --text:#0f172a; --muted:#475569;
-      --card:#fff; --border:#e2e8f0; --shadow:0 10px 25px rgba(2,6,23,.08);
-    }
-    body {
-      margin:0;
-      font-family:sans-serif;
-      background:#fff url("sakura-bg.jpg") no-repeat center center fixed;
+    :root{--bg:#fff;--bg-soft:#f8fafc;--text:#0f172a;--muted:#475569;
+      --card:#fff;--border:#e2e8f0;--primary:#3b82f6;--accent:#22c55e;
+      --danger:#ef4444;--shadow:0 10px 25px rgba(2,6,23,.08);}
+    [data-theme="dark"]{--bg:#0f172a;--bg-soft:#111827;--text:#e5e7eb;--muted:#94a3b8;
+      --card:#111827;--border:#1f2937;--shadow:0 10px 30px rgba(0,0,0,.25);}
+
+    /* === Sakura background (Unsplash) === */
+    body{
+      margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,"Noto Sans",sans-serif;color:var(--text);
+      background:
+        linear-gradient(rgba(255,255,255,0.86), rgba(255,255,255,0.86)),
+        url("https://images.unsplash.com/photo-1523217582562-09d0def993a6?auto=format&fit=crop&w=1920&q=80")
+        no-repeat top center fixed;
       background-size:cover;
-      color:var(--text);
-      position:relative;
     }
-    /* overlay transparan */
-    body::before {
-      content:"";
-      position:fixed;
-      inset:0;
-      background:rgba(255,255,255,0.75); /* putih transparan */
-      z-index:-1;
+    [data-theme="dark"] body{
+      background:
+        linear-gradient(rgba(15,23,42,0.80), rgba(15,23,42,0.90)),
+        url("https://images.unsplash.com/photo-1523217582562-09d0def993a6?auto=format&fit=crop&w=1920&q=80")
+        no-repeat top center fixed;
+      background-size:cover;
     }
+
     a{text-decoration:none;color:inherit}
+    img{max-width:100%;display:block}
     .container{max-width:1120px;margin:0 auto;padding:0 1rem}
-    .btn{display:inline-flex;align-items:center;gap:.5rem;
-      padding:.6rem .9rem;border:1px solid var(--border);
-      border-radius:.7rem;cursor:pointer;
-      background:var(--card);color:var(--text)}
+
+    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.6rem .9rem;border:1px solid var(--border);
+      border-radius:.7rem;cursor:pointer;background:var(--card);color:var(--text);transition:transform .15s}
+    .btn:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
     .btn.primary{background:var(--primary);color:#fff;border-color:var(--primary)}
     .btn.soft{background:transparent;color:var(--primary);border-color:var(--primary)}
-    .badge{padding:.1rem .4rem;font-size:.75rem;background:#f1f5f9;border:1px solid var(--border);border-radius:.4rem}
-    .nav{position:sticky;top:0;z-index:40;background:rgba(255,255,255,0.8);backdrop-filter:blur(6px);border-bottom:1px solid var(--border)}
+    .badge{padding:.1rem .4rem;font-size:.75rem;background:rgba(148,163,184,.25);border:1px solid var(--border);border-radius:.4rem}
+
+    .nav{position:sticky;top:0;z-index:40;background:color-mix(in oklab,var(--bg) 85%, transparent);
+      backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
     .nav-inner{display:flex;justify-content:space-between;align-items:center;padding:.7rem 0}
     .nav-links{display:none;gap:1rem}
     @media(min-width:768px){.nav-links{display:flex}}
-    .hero{padding:3rem 0}
+
+    .hero{padding:3rem 0;background:linear-gradient(180deg,color-mix(in oklab,var(--primary) 10%,transparent),transparent)}
     .grid{display:grid;gap:1rem}
     .grid-2{grid-template-columns:1fr}
     .grid-3{grid-template-columns:1fr}
@@ -48,36 +57,39 @@
     .card>.p{padding:1rem}
     .section{padding:2.5rem 0}
     .muted{color:var(--muted)}
-    .aspect-video{position:relative;padding-top:56.25%;background:#f8fafc;border:1px solid var(--border);border-radius:1rem;overflow:hidden}
+    .aspect-video{position:relative;padding-top:56.25%;background:var(--bg-soft);border:1px solid var(--border);border-radius:1rem;overflow:hidden}
     .aspect-video>*{position:absolute;inset:0;width:100%;height:100%}
     .flex{display:flex;gap:.5rem;align-items:center}
     .right{margin-left:auto}
     .space{height:1rem}
 
-    /* tombol back to top */
-    #backToTop {
-      position:fixed;bottom:20px;right:20px;
-      background:var(--primary);color:#fff;border:none;
-      padding:.7rem;border-radius:50%;cursor:pointer;
-      box-shadow:var(--shadow);display:none;
+    /* Logo helper agar tetap terlihat */
+    .logo{height:40px;border-radius:.5rem;background:#fff;box-shadow:var(--shadow)}
+    [data-theme="dark"] .logo{background:#0b1220}
+
+    /* Back to top */
+    #backTop{
+      position:fixed;bottom:20px;right:20px;z-index:50;width:44px;height:44px;border:none;border-radius:50%;
+      background:var(--primary);color:#fff;cursor:pointer;box-shadow:var(--shadow);display:none;font-size:18px;
     }
+    #backTop:hover{transform:translateY(-2px)}
   </style>
 </head>
-<body id="top">
+<body>
   <!-- NAVBAR -->
   <header class="nav">
     <div class="container nav-inner">
       <div class="flex" style="gap:.7rem">
-        <img src="jm.jpeg" alt="Logo" style="height:40px;border-radius:.5rem"/>
-        <a href="#top"><strong>Jepang Mengaji</strong></a>
+        <img src="jm.jpeg" alt="Logo" class="logo" />
+        <!-- brand = tombol Home -->
+        <a href="#top" style="font-size:1.2rem;font-weight:700">Jepang Mengaji</a>
         <span class="badge">コミュニティ</span>
       </div>
       <nav class="nav-links">
-        <a href="#artikel">Artikel</a><a href="#kajian">Info Kajian</a>
-        <a href="#live">Live</a><a href="#donasi">Donasi</a>
-        <a href="#tentang">Tentang</a><a href="#kontak">Kontak</a>
+        <a href="#artikel">Artikel</a><a href="#kajian">Info Kajian</a><a href="#live">Live</a><a href="#donasi">Donasi</a><a href="#tentang">Tentang</a><a href="#kontak">Kontak</a>
       </nav>
       <div class="flex">
+        <button class="btn soft" id="themeToggle" aria-label="Toggle theme">🌗</button>
         <a class="btn primary" href="#donasi">❤️ Donasi</a>
       </div>
     </div>
@@ -98,6 +110,8 @@
       <div class="card"><div class="p">
         <h3>Live Stream</h3>
         <div class="aspect-video" id="livePlayer"><div class="center muted">Belum ada Live aktif</div></div>
+        <div class="space"></div>
+        <div class="flex"><input id="ytId" class="input" placeholder="Masukkan YouTube Video ID"/><button class="btn" id="applyId">Terapkan</button></div>
       </div></div>
     </div>
   </section>
@@ -108,12 +122,20 @@
   </section>
 
   <!-- KAJIAN -->
-  <section id="kajian" class="section">
+  <section id="kajian" class="section" style="background:var(--bg-soft)">
     <div class="container"><h2>Info Kajian</h2><div id="kajians" class="grid grid-3"></div></div>
   </section>
 
+  <!-- LIVE -->
+  <section id="live" class="section">
+    <div class="container grid grid-2">
+      <div class="card"><div class="p"><h3>Player</h3><div class="aspect-video" id="livePlayer2"><div class="center muted">Masukkan ID video</div></div></div></div>
+      <div class="card"><div class="p"><h3>Pengumuman Live</h3><p class="muted">InsyaAllah Sabtu, 19:30 JST. Tema: Menjaga Hati di Perantauan.</p></div></div>
+    </div>
+  </section>
+
   <!-- DONASI -->
-  <section id="donasi" class="section">
+  <section id="donasi" class="section" style="background:var(--bg-soft)">
     <div class="container">
       <h2>Donasi</h2>
       <div class="grid grid-2">
@@ -123,34 +145,132 @@
     </div>
   </section>
 
+  <!-- NEWSLETTER -->
+  <section class="section">
+    <div class="container grid grid-2" style="align-items:center">
+      <div><h3>Berlangganan Info</h3><p class="muted">Dapatkan update artikel & kajian.</p></div>
+      <form onsubmit="event.preventDefault();alert('Terima kasih!');" class="grid" style="grid-template-columns:1fr auto;gap:.6rem">
+        <input type="email" class="input" placeholder="Email Anda" required/>
+        <button class="btn primary">Daftar</button>
+      </form>
+    </div>
+  </section>
+
   <!-- TENTANG & KONTAK -->
-  <section id="tentang" class="section">
-    <div class="container"><h2>Tentang Jepang Mengaji</h2><p class="muted">Komunitas Muslim Indonesia di Jepang.</p></div>
+  <section id="tentang" class="section" style="background:var(--bg-soft)">
+    <div class="container grid grid-2">
+      <div><h2>Tentang Jepang Mengaji</h2><p class="muted">Komunitas Muslim Indonesia di Jepang.</p></div>
+      <div class="card"><div class="p"><h3>Gabung Komunitas</h3><a class="btn" href="#">Telegram</a></div></div>
+    </div>
   </section>
   <section id="kontak" class="section">
-    <div class="container"><h2>Kontak Panitia</h2><p class="muted">Email: info@jepangmengaji.jp</p></div>
+    <div class="container grid grid-2">
+      <div><h2>Kontak Panitia</h2>
+        <form onsubmit="event.preventDefault();alert('Pesan terkirim');">
+          <div class="grid" style="grid-template-columns:1fr 1fr;gap:.6rem">
+            <input class="input" placeholder="Nama" required/>
+            <input class="input" type="email" placeholder="Email" required/>
+          </div>
+          <input class="input" placeholder="Subjek" required/>
+          <textarea class="input" rows="4" placeholder="Pesan"></textarea>
+          <button class="btn primary">Kirim</button>
+        </form>
+      </div>
+      <div class="card"><div class="p"><h3>Alamat & Jadwal</h3><p class="muted">Base: Tokyo (UTC+9)</p></div></div>
+    </div>
   </section>
 
   <!-- FOOTER -->
   <footer class="footer">
     <div class="container" style="padding:1rem 0;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap">
-      <div class="flex" style="gap:.5rem"><img src="jm.jpeg" alt="Logo" style="height:24px"/><span class="muted">© <span id="year"></span> Jepang Mengaji</span></div>
-      <div class="flex" style="gap:1rem"><a class="muted" href="#">Privasi</a><a class="muted" href="#">Ketentuan</a></div>
+      <div class="flex" style="gap:.5rem"><img src="jm.jpeg" alt="Logo" style="height:24px;border-radius:.25rem"/><span class="muted">© <span id="year"></span> Jepang Mengaji</span></div>
+      <div class="flex" style="gap:1rem"><a class="muted" href="#">Privasi</a><a class="muted" href="#">Ketentuan</a><a class="muted" href="#top">Kembali ke Atas</a></div>
     </div>
   </footer>
 
-  <!-- tombol back to top -->
-  <button id="backToTop">↑</button>
+  <!-- Back to Top floating button -->
+  <button id="backTop" title="Kembali ke atas">⬆</button>
 
   <script>
+    // CSV URLs
+    const ARTICLES_CSV_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vQiIOueuc-YygpdulT9x9ZjJUA2jlaWXu2uGzwgHcugNebW5HLjR66luq3kHmqDvTmNJlSjpjsIQ6PG/pub?gid=0&single=true&output=csv";
+    const KAJIAN_CSV_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vQiIOueuc-YygpdulT9x9ZjJUA2jlaWXu2uGzwgHcugNebW5HLjR66luq3kHmqDvTmNJlSjpjsIQ6PG/pub?gid=450885199&single=true&output=csv";
+    let videoId="";
+
+    // Theme toggle
+    document.getElementById('themeToggle').addEventListener('click',()=>{
+      const cur=document.documentElement.getAttribute('data-theme')==='light'?'dark':'light';
+      document.documentElement.setAttribute('data-theme',cur);
+      localStorage.setItem('jm-theme',cur);
+    });
+
+    // Year
     document.getElementById('year').textContent=new Date().getFullYear();
 
-    // tombol back to top
-    const btn=document.getElementById('backToTop');
-    window.addEventListener('scroll',()=>{
-      if(window.scrollY>200){btn.style.display='block';}else{btn.style.display='none';}
-    });
-    btn.addEventListener('click',()=>{window.scrollTo({top:0,behavior:'smooth'});});
+    // Back to top show/hide + smooth scroll
+    const backBtn=document.getElementById('backTop');
+    window.addEventListener('scroll',()=>{backBtn.style.display=window.scrollY>300?'block':'none'});
+    backBtn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+    // Live player
+    function mountIframe(id,vid){
+      const el=document.getElementById(id);
+      el.innerHTML=vid?`<iframe src="https://www.youtube.com/embed/${vid}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`:'<div class="center muted">Belum ada Live aktif</div>';
+    }
+    document.getElementById('applyId').addEventListener('click',()=>{videoId=document.getElementById('ytId').value.trim();mountIframe('livePlayer',videoId);mountIframe('livePlayer2',videoId)});
+
+    // Robust CSV parser + cache-buster
+    async function fetchCSV(url){
+      const res=await fetch(url+(url.includes('?')?'&':'?')+'_='+Date.now());
+      const text=(await res.text()).replace(/^\uFEFF/,'');
+      const rows=[];let row=[],cell='',inQuotes=false;
+      for(let i=0;i<text.length;i++){
+        const c=text[i],n=text[i+1];
+        if(c=='"'){ if(inQuotes&&n=='"'){cell+='"';i++;} else inQuotes=!inQuotes; }
+        else if(c===','&&!inQuotes){row.push(cell);cell='';}
+        else if((c==='\n'||(c==='\r'&&n==='\n'))&&!inQuotes){ if(c==='\r') i++; row.push(cell); cell=''; if(row.length) rows.push(row); row=[]; }
+        else { cell+=c; }
+      }
+      if(cell||row.length){row.push(cell);rows.push(row)}
+      const header=(rows.shift()||[]).map(h=>h.trim());
+      return rows.map(r=>Object.fromEntries(header.map((h,i)=>[h,(r[i]||'').trim()])));
+    }
+
+    function renderArticles(list){
+      const wrap=document.getElementById('articles'); wrap.innerHTML='';
+      if(!list.length){wrap.innerHTML='<div class="card"><div class="p muted">Belum ada artikel.</div></div>';return}
+      list.forEach(a=>{
+        const card=document.createElement('article');card.className='card';
+        const p=document.createElement('div');p.className='p';
+        const h3=document.createElement('h3');h3.textContent=a.title||'';p.appendChild(h3);
+        const ex=document.createElement('p');ex.className='muted';ex.textContent=a.excerpt||'';p.appendChild(ex);
+        const dt=document.createElement('div');dt.className='muted';dt.textContent=a.date?new Date(a.date).toLocaleDateString('ja-JP',{year:'numeric',month:'short',day:'numeric'}):'';p.appendChild(dt);
+        const btn=document.createElement('a');btn.className='btn right';btn.href=a.href||'#';btn.textContent='Baca';if(/^https?:/i.test(btn.href)){btn.target='_blank';btn.rel='noopener'};p.appendChild(btn);
+        card.appendChild(p);wrap.appendChild(card);
+      });
+    }
+    function renderKajian(list){
+      const wrap=document.getElementById('kajians'); wrap.innerHTML='';
+      if(!list.length){wrap.innerHTML='<div class="card"><div class="p muted">Belum ada kajian.</div></div>';return}
+      list.forEach(k=>{
+        const card=document.createElement('article');card.className='card';
+        const p=document.createElement('div');p.className='p';
+        const h3=document.createElement('h3');h3.textContent=k.judul||'';p.appendChild(h3);
+        const u=document.createElement('div');u.className='muted';u.textContent='👤 '+(k.ustadz||'');p.appendChild(u);
+        const w=document.createElement('div');w.className='muted';w.textContent='🗓️ '+(k.waktu||'');p.appendChild(w);
+        const l=document.createElement('div');l.className='muted';l.textContent='📍 '+(k.lokasi||'');p.appendChild(l);
+        const link=document.createElement('a');link.className='btn';link.href=k.mapUrl||'#';link.textContent='Lihat Lokasi/Link';if(/^https?:/i.test(link.href)){link.target='_blank';link.rel='noopener'};p.appendChild(link);
+        card.appendChild(p);wrap.appendChild(card);
+      });
+    }
+
+    async function initData(){
+      try{
+        const [a,k]=await Promise.all([fetchCSV(ARTICLES_CSV_URL),fetchCSV(KAJIAN_CSV_URL)]);
+        renderArticles(a); renderKajian(k);
+      }catch(e){console.error(e)}
+    }
+    initData();
   </script>
 </body>
 </html>
