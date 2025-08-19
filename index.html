@@ -14,7 +14,6 @@
     [data-theme="dark"]{--bg:#0f172a;--bg-soft:#111827;--text:#e5e7eb;--muted:#94a3b8;
       --card:#111827;--border:#1f2937;--shadow:0 10px 30px rgba(0,0,0,.25);}
 
-    /* === Sakura background (Unsplash) === */
     body{
       margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,"Noto Sans",sans-serif;color:var(--text);
       background:
@@ -63,11 +62,11 @@
     .right{margin-left:auto}
     .space{height:1rem}
 
-    /* Logo helper agar tetap terlihat */
     .logo{height:40px;border-radius:.5rem;background:#fff;box-shadow:var(--shadow)}
     [data-theme="dark"] .logo{background:#0b1220}
 
-    /* Back to top */
+    .input{width:100%;padding:.6rem .8rem;border:1px solid var(--border);border-radius:.6rem;background:var(--card);color:var(--text)}
+
     #backTop{
       position:fixed;bottom:20px;right:20px;z-index:50;width:44px;height:44px;border:none;border-radius:50%;
       background:var(--primary);color:#fff;cursor:pointer;box-shadow:var(--shadow);display:none;font-size:18px;
@@ -81,7 +80,6 @@
     <div class="container nav-inner">
       <div class="flex" style="gap:.7rem">
         <img src="jm.jpeg" alt="Logo" class="logo" />
-        <!-- brand = tombol Home -->
         <a href="#top" style="font-size:1.2rem;font-weight:700">Jepang Mengaji</a>
         <span class="badge">コミュニティ</span>
       </div>
@@ -139,8 +137,49 @@
     <div class="container">
       <h2>Donasi</h2>
       <div class="grid grid-2">
-        <div class="card"><div class="p"><h3>❤️ Donasi Dauroh</h3><p class="muted">Dukung penyelenggaraan dauroh.</p></div></div>
-        <div class="card"><div class="p"><h3>❤️ Donasi Masjid</h3><p class="muted">Renovasi/operasional masjid & musholla.</p></div></div>
+
+        <!-- Donasi Dauroh -->
+        <article class="card" id="donasi-dauroh"><div class="p">
+          <h3>❤️ Donasi Dauroh</h3>
+          <p class="muted">Dukung penyelenggaraan dauroh (pemateri, tempat, konsumsi, dokumentasi).</p>
+
+          <h4>Nomor Rekening</h4>
+          <ul class="muted" style="margin-top:.2rem;line-height:1.7">
+            <!-- TODO: Ganti sesuai data resmi -->
+            <li><strong>BCA</strong> a.n. <em>Jepang Mengaji</em> — <strong>1234567890</strong></li>
+            <li><strong>MUFG (JP)</strong> a.n. <em>Jepang Mengaji</em> — <strong>000-1234567</strong></li>
+          </ul>
+
+          <div class="space"></div>
+          <div class="flex" style="flex-wrap:wrap;gap:.5rem">
+            <!-- TODO: Ganti link donasi online -->
+            <a class="btn primary" href="https://contoh.link/donasi-dauroh" target="_blank" rel="noopener">💳 Link Donasi</a>
+            <a class="btn" href="https://wa.me/6281200000000?text=Assalamu%27alaikum%2C%20saya%20konfirmasi%20%2F%20bertanya%20Donasi%20Dauroh.%0ANama%3A%20-%0AJumlah%3A%20-%0ATransfer%20ke%20(REK)%3A%20-%0ABukti%20transfer%3A%20(akan%20saya%20kirim)%0A" target="_blank" rel="noopener">✅ Konfirmasi via WhatsApp</a>
+            <a class="btn" href="#kontak">📞 Kontak Panitia</a>
+          </div>
+        </div></article>
+
+        <!-- Donasi Masjid -->
+        <article class="card" id="donasi-masjid"><div class="p">
+          <h3>❤️ Donasi Masjid</h3>
+          <p class="muted">Untuk renovasi/operasional masjid & musholla (sewa, listrik, kebersihan, peralatan).</p>
+
+          <h4>Nomor Rekening</h4>
+          <ul class="muted" style="margin-top:.2rem;line-height:1.7">
+            <!-- TODO: Ganti sesuai data resmi -->
+            <li><strong>BCA</strong> a.n. <em>Jepang Mengaji</em> — <strong>0987654321</strong></li>
+            <li><strong>MUFG (JP)</strong> a.n. <em>Jepang Mengaji</em> — <strong>000-7654321</strong></li>
+          </ul>
+
+          <div class="space"></div>
+          <div class="flex" style="flex-wrap:wrap;gap:.5rem)">
+            <!-- TODO: Ganti link donasi online -->
+            <a class="btn primary" href="https://contoh.link/donasi-masjid" target="_blank" rel="noopener">💳 Link Donasi</a>
+            <a class="btn" href="https://wa.me/6281211111111?text=Assalamu%27alaikum%2C%20saya%20konfirmasi%20%2F%20bertanya%20Donasi%20Masjid.%0ANama%3A%20-%0AJumlah%3A%20-%0ATransfer%20ke%20(REK)%3A%20-%0ABukti%20transfer%3A%20(akan%20saya%20kirim)%0A" target="_blank" rel="noopener">✅ Konfirmasi via WhatsApp</a>
+            <a class="btn" href="#kontak">📞 Kontak Panitia</a>
+          </div>
+        </div></article>
+
       </div>
     </div>
   </section>
@@ -160,23 +199,62 @@
   <section id="tentang" class="section" style="background:var(--bg-soft)">
     <div class="container grid grid-2">
       <div><h2>Tentang Jepang Mengaji</h2><p class="muted">Komunitas Muslim Indonesia di Jepang.</p></div>
-      <div class="card"><div class="p"><h3>Gabung Komunitas</h3><a class="btn" href="#">Telegram</a></div></div>
+      <div class="card"><div class="p"><h3>Gabung Komunitas</h3>
+        <!-- TODO: ganti link Telegram -->
+        <a class="btn" href="https://t.me/namagrupjm" target="_blank" rel="noopener">Telegram</a>
+      </div></div>
     </div>
   </section>
+
   <section id="kontak" class="section">
     <div class="container grid grid-2">
-      <div><h2>Kontak Panitia</h2>
+
+      <!-- Form pertanyaan -->
+      <div>
+        <h2>Kontak Panitia</h2>
+        <p class="muted">Ada pertanyaan seputar kajian atau donasi? Kirim pesan melalui form atau hubungi kontak di samping.</p>
         <form onsubmit="event.preventDefault();alert('Pesan terkirim');">
           <div class="grid" style="grid-template-columns:1fr 1fr;gap:.6rem">
             <input class="input" placeholder="Nama" required/>
             <input class="input" type="email" placeholder="Email" required/>
           </div>
-          <input class="input" placeholder="Subjek" required/>
+          <input class="input" placeholder="Subjek (mis. Donasi Dauroh / Donasi Masjid / Info Kajian)" required/>
           <textarea class="input" rows="4" placeholder="Pesan"></textarea>
-          <button class="btn primary">Kirim</button>
+          <div class="flex" style="margin-top:.5rem;gap:.5rem">
+            <a class="btn" href="#donasi-dauroh">↗ Donasi Dauroh</a>
+            <a class="btn" href="#donasi-masjid">↗ Donasi Masjid</a>
+            <button class="btn primary" type="submit">Kirim</button>
+          </div>
         </form>
       </div>
-      <div class="card"><div class="p"><h3>Alamat & Jadwal</h3><p class="muted">Base: Tokyo (UTC+9)</p></div></div>
+
+      <!-- Daftar kontak + alamat & jadwal -->
+      <aside class="card"><div class="p">
+        <h3>Kontak Langsung & Konfirmasi</h3>
+        <ul class="muted" style="margin-top:.2rem;line-height:1.8">
+          <!-- TODO: Ganti nomor & nama -->
+          <li>📱 <strong>CP Donasi Dauroh</strong> — <a href="https://wa.me/6281200000000?text=Assalamu%27alaikum%2C%20saya%20ingin%20konfirmasi%20Donasi%20Dauroh" target="_blank" rel="noopener">WhatsApp</a> · <a href="tel:+6281200000000">Telp</a></li>
+          <li>📱 <strong>CP Donasi Masjid</strong> — <a href="https://wa.me/6281211111111?text=Assalamu%27alaikum%2C%20saya%20ingin%20konfirmasi%20Donasi%20Masjid" target="_blank" rel="noopener">WhatsApp</a> · <a href="tel:+6281211111111">Telp</a></li>
+          <li>✉️ Email Panitia — <a href="mailto:panitia@jepangmengaji.org">panitia@jepangmengaji.org</a></li>
+        </ul>
+
+        <div class="space"></div>
+        <h3>Alamat & Jadwal</h3>
+        <p class="muted" style="margin:.2rem 0 .6rem">
+          Base: Tokyo (UTC+9) — 
+          <!-- TODO: Ganti link maps -->
+          <a href="https://maps.google.com/?q=Masjid%20Contoh%20Tokyo" target="_blank" rel="noopener">📍 Lihat di Google Maps</a>
+        </p>
+        <ul class="muted" style="line-height:1.7">
+          <!-- Contoh jadwal singkat -->
+          <li>Sabtu, 19:30 — Kajian Rutin</li>
+          <li>Ahad, 09:00 — Kelas Tahsin</li>
+        </ul>
+        <div class="space"></div>
+        <!-- Opsional: link kalender publik -->
+        <a class="btn" href="https://calendar.google.com/" target="_blank" rel="noopener">🗓️ Tambah ke Kalender</a>
+      </div></aside>
+
     </div>
   </section>
 
@@ -217,7 +295,11 @@
       const el=document.getElementById(id);
       el.innerHTML=vid?`<iframe src="https://www.youtube.com/embed/${vid}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`:'<div class="center muted">Belum ada Live aktif</div>';
     }
-    document.getElementById('applyId').addEventListener('click',()=>{videoId=document.getElementById('ytId').value.trim();mountIframe('livePlayer',videoId);mountIframe('livePlayer2',videoId)});
+    document.getElementById('applyId').addEventListener('click',()=>{
+      videoId=document.getElementById('ytId').value.trim();
+      mountIframe('livePlayer',videoId);
+      mountIframe('livePlayer2',videoId);
+    });
 
     // Robust CSV parser + cache-buster
     async function fetchCSV(url){
