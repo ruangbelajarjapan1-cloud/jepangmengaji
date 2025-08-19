@@ -1,115 +1,83 @@
 <!doctype html>
-<html lang="id" data-theme="dark">
+<html lang="id">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Jepang Mengaji — Mengaji, Berjejaring, Berkontribusi sesuai Sunnah</title>
-  <meta name="description" content="Artikel keislaman, info kajian, live YouTube, dan donasi kegiatan dakwah di Jepang (JST)." />
+  <title>Jepang Mengaji — Mengaji, Berjejaring, Berkontribusi</title>
   <link rel="icon" href="jm.jpeg" />
   <style>
-    /* ======== Minimal, framework-less CSS (mobile-first, dark-first) ======== */
-    :root{
-      --bg:#0f172a; /* slate-900 */
-      --bg-soft:#111827; /* gray-900 */
-      --text:#e5e7eb; /* gray-200 */
-      --muted:#94a3b8; /* slate-400 */
-      --card:#111827;
-      --border:#1f2937; /* gray-800 */
-      --primary:#3b82f6; /* blue-500 */
-      --primary-weak:#60a5fa; /* blue-400 */
-      --accent:#22c55e; /* green-500 */
-      --danger:#ef4444; /* red-500 */
-      --shadow: 0 10px 30px rgba(0,0,0,.25);
+    :root {
+      --primary:#3b82f6; --text:#0f172a; --muted:#475569;
+      --card:#fff; --border:#e2e8f0; --shadow:0 10px 25px rgba(2,6,23,.08);
     }
-    [data-theme="light"]{
-      --bg:#ffffff;
-      --bg-soft:#f8fafc; /* slate-50 */
-      --text:#0f172a;
-      --muted:#475569; /* slate-600 */
-      --card:#ffffff;
-      --border:#e2e8f0; /* slate-200 */
-      --shadow: 0 10px 25px rgba(2,6,23,.08);
+    body {
+      margin:0;
+      font-family:sans-serif;
+      background:#fff url("sakura-bg.jpg") no-repeat center center fixed;
+      background-size:cover;
+      color:var(--text);
+      position:relative;
     }
-    html,body{height:100%}
-    body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,"Noto Sans",sans-serif;background:var(--bg);color:var(--text);}
-    a{color:inherit;text-decoration:none}
-    img{max-width:100%;display:block}
+    /* overlay transparan */
+    body::before {
+      content:"";
+      position:fixed;
+      inset:0;
+      background:rgba(255,255,255,0.75); /* putih transparan */
+      z-index:-1;
+    }
+    a{text-decoration:none;color:inherit}
     .container{max-width:1120px;margin:0 auto;padding:0 1rem}
-    .btn{display:inline-flex;align-items:center;gap:.5rem;border:1px solid var(--border);background:var(--card);color:var(--text);padding:.6rem .9rem;border-radius:.75rem;cursor:pointer;transition:all .15s}
-    .btn:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
-    .btn.primary{background:var(--primary);border-color:var(--primary);color:white}
-    .btn.soft{background:transparent;border-color:var(--primary);color:var(--primary)}
-    .badge{display:inline-block;background:rgba(148,163,184,.25);color:var(--text);border:1px solid var(--border);padding:.15rem .5rem;border-radius:.5rem;font-size:.75rem}
-    .nav{position:sticky;top:0;background:color-mix(in oklab, var(--bg) 85%, transparent);backdrop-filter:saturate(120%) blur(8px);z-index:40;border-bottom:1px solid var(--border)}
-    .nav-inner{display:flex;align-items:center;justify-content:space-between;padding:.8rem 0}
+    .btn{display:inline-flex;align-items:center;gap:.5rem;
+      padding:.6rem .9rem;border:1px solid var(--border);
+      border-radius:.7rem;cursor:pointer;
+      background:var(--card);color:var(--text)}
+    .btn.primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+    .btn.soft{background:transparent;color:var(--primary);border-color:var(--primary)}
+    .badge{padding:.1rem .4rem;font-size:.75rem;background:#f1f5f9;border:1px solid var(--border);border-radius:.4rem}
+    .nav{position:sticky;top:0;z-index:40;background:rgba(255,255,255,0.8);backdrop-filter:blur(6px);border-bottom:1px solid var(--border)}
+    .nav-inner{display:flex;justify-content:space-between;align-items:center;padding:.7rem 0}
     .nav-links{display:none;gap:1rem}
-    .row{display:grid;gap:1rem}
-    .hero{padding:3rem 0 2rem;background:linear-gradient(180deg, color-mix(in oklab, var(--primary) 10%, transparent), transparent)}
-    .hero h1{font-size:clamp(1.6rem, 3vw + 1rem, 3rem);line-height:1.15;margin:0}
-    .muted{color:var(--muted)}
+    @media(min-width:768px){.nav-links{display:flex}}
+    .hero{padding:3rem 0}
     .grid{display:grid;gap:1rem}
     .grid-2{grid-template-columns:1fr}
     .grid-3{grid-template-columns:1fr}
+    @media(min-width:768px){.grid-2{grid-template-columns:1fr 1fr}.grid-3{grid-template-columns:repeat(3,1fr)}}
     .card{background:var(--card);border:1px solid var(--border);border-radius:1rem;box-shadow:var(--shadow)}
-    .card > .p{padding:1rem}
-    .card h3{margin:.2rem 0 .6rem 0}
+    .card>.p{padding:1rem}
     .section{padding:2.5rem 0}
-    .section-head{display:flex;align-items:end;justify-content:space-between;margin-bottom:1rem;gap:1rem}
-    .kicker{font-size:.9rem}
-    .input{width:100%;padding:.65rem .8rem;border:1px solid var(--border);border-radius:.7rem;background:transparent;color:var(--text)}
-    .footer{border-top:1px solid var(--border)}
+    .muted{color:var(--muted)}
+    .aspect-video{position:relative;padding-top:56.25%;background:#f8fafc;border:1px solid var(--border);border-radius:1rem;overflow:hidden}
+    .aspect-video>*{position:absolute;inset:0;width:100%;height:100%}
     .flex{display:flex;gap:.5rem;align-items:center}
+    .right{margin-left:auto}
     .space{height:1rem}
 
-    @media(min-width:768px){
-      .nav-links{display:flex}
-      .grid-2{grid-template-columns:1fr 1fr}
-      .grid-3{grid-template-columns:repeat(3,1fr)}
+    /* tombol back to top */
+    #backToTop {
+      position:fixed;bottom:20px;right:20px;
+      background:var(--primary);color:#fff;border:none;
+      padding:.7rem;border-radius:50%;cursor:pointer;
+      box-shadow:var(--shadow);display:none;
     }
-
-    /* small utility */
-    .aspect-video{position:relative;padding-top:56.25%;border-radius:1rem;overflow:hidden;background:var(--bg-soft);border:1px solid var(--border)}
-    .aspect-video > *{position:absolute;inset:0;width:100%;height:100%}
-    .line-2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-    .line-3{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-    .center{display:grid;place-items:center;text-align:center}
-    .right{margin-left:auto}
-    .hidden{display:none}
   </style>
-  <!--
-    ================= HOW TO AUTO-UPDATE WITH GOOGLE SHEETS =================
-    1) Buat 1 Google Sheet dengan dua sheet/tab: "Artikel" & "Kajian".
-       Skema kolom:
-       - Artikel: id, title, excerpt, date (YYYY-MM-DD), tags (pisah koma), href
-       - Kajian : id, judul, ustadz, waktu, lokasi, mapUrl
-    2) File > Share > Publish to the web > Pilih tiap sheet sebagai CSV. Salin URL CSV-nya.
-    3) Tempel URL pada konstanta ARTICLES_CSV_URL dan KAJIAN_CSV_URL di bawah.
-    4) Deploy index.html ini bersama jm.jpeg (logo). Selesai — data akan termuat otomatis di sisi klien.
-
-    Catatan Notion: Notion API butuh secret/token sehingga kurang aman dipakai langsung di browser.
-    Kalau ingin pakai Notion, sebaiknya lewat server kecil (proxy) untuk menyembunyikan secret,
-    lalu fetch dari endpoint kalian. (Saya bisa buatkan contoh Node/Cloudflare Worker kalau dibutuhkan.)
-  -->
 </head>
-<body>
+<body id="top">
   <!-- NAVBAR -->
   <header class="nav">
     <div class="container nav-inner">
-      <div class="flex" style="gap:.75rem">
-        <img src="jm.jpeg" alt="Logo Jepang Mengaji" style="height:40px;width:auto;border-radius:.5rem" onerror="this.style.display='none'"/>
-        <strong style="font-size:1.2rem">Jepang Mengaji</strong>
+      <div class="flex" style="gap:.7rem">
+        <img src="jm.jpeg" alt="Logo" style="height:40px;border-radius:.5rem"/>
+        <a href="#top"><strong>Jepang Mengaji</strong></a>
         <span class="badge">コミュニティ</span>
       </div>
-      <nav class="nav-links kicker">
-        <a href="#artikel">Artikel</a>
-        <a href="#kajian">Info Kajian</a>
-        <a href="#live">Live</a>
-        <a href="#donasi">Donasi</a>
-        <a href="#tentang">Tentang</a>
-        <a href="#kontak">Kontak</a>
+      <nav class="nav-links">
+        <a href="#artikel">Artikel</a><a href="#kajian">Info Kajian</a>
+        <a href="#live">Live</a><a href="#donasi">Donasi</a>
+        <a href="#tentang">Tentang</a><a href="#kontak">Kontak</a>
       </nav>
       <div class="flex">
-        <button class="btn soft" id="themeToggle" aria-label="Toggle theme">🌗</button>
         <a class="btn primary" href="#donasi">❤️ Donasi</a>
       </div>
     </div>
@@ -120,313 +88,69 @@
     <div class="container grid grid-2" style="align-items:center;gap:1.5rem">
       <div>
         <h1>Mengaji, Berjejaring, <span style="color:var(--primary)">Berkontribusi</span> di Jepang</h1>
-        <p class="muted" style="margin:.8rem 0 1.2rem">Platform komunitas untuk artikel keislaman, info kajian, live YouTube, dan donasi kegiatan dakwah di Jepang.</p>
-        <div class="flex" style="flex-wrap:wrap;gap:.7rem">
-          <a class="btn primary" href="#kajian">📅 Lihat Jadwal Kajian</a>
-          <a class="btn" href="#artikel">📖 Baca Artikel</a>
-          <a class="btn" href="#live">▶️ Nonton Live</a>
+        <p class="muted">Artikel, info kajian, live YouTube, dan donasi kegiatan dakwah di Jepang.</p>
+        <div class="flex" style="flex-wrap:wrap;gap:.5rem">
+          <a class="btn primary" href="#kajian">📅 Lihat Kajian</a>
+          <a class="btn" href="#artikel">📖 Artikel</a>
+          <a class="btn" href="#live">▶️ Live</a>
         </div>
       </div>
-      <div>
-        <div class="card">
-          <div class="p">
-            <h3 class="kicker">Live Stream</h3>
-            <div class="aspect-video" id="livePlayer">
-              <!-- iframe akan diinject oleh JS ketika videoId terisi -->
-              <div class="center muted" id="liveEmpty">Belum ada Live aktif. YouTube Video ID.</div>
-            </div>
-            <div class="space"></div>
-            <div class="flex">
-              <input id="ytId" class="input" placeholder="Masukkan YouTube Video ID"/>
-              <button class="btn" id="applyId">Terapkan</button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <div class="card"><div class="p">
+        <h3>Live Stream</h3>
+        <div class="aspect-video" id="livePlayer"><div class="center muted">Belum ada Live aktif</div></div>
+      </div></div>
     </div>
   </section>
 
   <!-- ARTIKEL -->
   <section id="artikel" class="section">
-    <div class="container">
-      <div class="section-head">
-        <div>
-          <h2 style="margin:0 0 .2rem 0">Artikel Terbaru</h2>
-          <div class="muted kicker">Tulisan ringan seputar ilmu & kehidupan Muslim di Jepang.</div>
-        </div>
-        <a class="btn" href="#">Lihat Semua</a>
-      </div>
-      <div id="articles" class="grid grid-3"></div>
-    </div>
+    <div class="container"><h2>Artikel Terbaru</h2><div id="articles" class="grid grid-3"></div></div>
   </section>
 
   <!-- KAJIAN -->
-  <section id="kajian" class="section" style="background:var(--bg-soft)">
-    <div class="container">
-      <div class="section-head">
-        <div>
-          <h2 style="margin:0 0 .2rem 0">Info Kajian</h2>
-          <div class="muted kicker">Semua waktu dalam JST (Japan Standard Time).</div>
-        </div>
-        <a class="btn" href="#">Kalender Lengkap</a>
-      </div>
-      <div id="kajians" class="grid grid-3"></div>
-    </div>
-  </section>
-
-  <!-- LIVE -->
-  <section id="live" class="section">
-    <div class="container grid grid-2">
-      <div class="card"><div class="p">
-        <h3>Player</h3>
-        <div class="aspect-video" id="livePlayer2"><div class="center muted">Masukkan ID video untuk menampilkan player</div></div>
-      </div></div>
-      <div class="card"><div class="p">
-        <h3>Pengumuman Live</h3>
-        <details open>
-          <summary class="kicker">Live Akhir Pekan</summary>
-          <div class="muted">InsyaAllah Sabtu, 19:30 JST. Tema: Akidah.</div>
-        </details>
-        <details>
-          <summary class="kicker">Tanya Jawab</summary>
-          <div class="muted">Kirim pertanyaan via form kontak atau komentar YouTube.</div>
-        </details>
-      </div></div>
-    </div>
+  <section id="kajian" class="section">
+    <div class="container"><h2>Info Kajian</h2><div id="kajians" class="grid grid-3"></div></div>
   </section>
 
   <!-- DONASI -->
-  <section id="donasi" class="section" style="background:var(--bg-soft)">
+  <section id="donasi" class="section">
     <div class="container">
-      <div class="section-head">
-        <div>
-          <h2 style="margin:0 0 .2rem 0">Donasi</h2>
-          <div class="muted kicker">Amanah Anda membantu dakwah & layanan komunitas.</div>
-        </div>
-      </div>
+      <h2>Donasi</h2>
       <div class="grid grid-2">
-        <div class="card"><div class="p">
-          <h3>❤️ Donasi Dauroh</h3>
-          <p class="muted">Dukung penyelenggaraan dauroh (sewa tempat, konsumsi, transportasi asatidz).</p>
-          <p class="kicker">Mizuho Bank · a.n. <b>Jepang Mengaji</b><br/>No. Rekening: <code>0000-0000-0000</code> · Berita: <b>DAUROH</b></p>
-          <div class="grid" style="grid-template-columns:1fr 1fr;gap:1rem">
-            <div class="center muted" style="border:1px dashed var(--border);border-radius:1rem;height:140px">QRIS/振込QR</div>
-            <div class="center">
-              <a class="btn" href="#kontak">Konfirmasi Donasi</a>
-              <div class="space"></div>
-              <a class="btn soft" href="#">Unduh Proposal</a>
-            </div>
-          </div>
-        </div></div>
-        <div class="card"><div class="p">
-          <h3>❤️ Donasi Masjid</h3>
-          <p class="muted">Donasi Masjid As-Sunnah Hekinan.</p>
-          <p class="kicker">MUFG Bank · a.n. <b>Jepang Mengaji</b><br/>No. Rekening: <code>1111-1111-1111</code> · Berita: <b>MASJID</b></p>
-          <div class="grid" style="grid-template-columns:1fr 1fr;gap:1rem">
-            <div class="center muted" style="border:1px dashed var(--border);border-radius:1rem;height:140px">QRIS/振込QR</div>
-            <div class="center">
-              <a class="btn" href="#kontak">Konfirmasi Donasi</a>
-              <div class="space"></div>
-              <a class="btn soft" href="#">Unduh Proposal</a>
-            </div>
-          </div>
-        </div></div>
+        <div class="card"><div class="p"><h3>❤️ Donasi Dauroh</h3><p class="muted">Dukung penyelenggaraan dauroh.</p></div></div>
+        <div class="card"><div class="p"><h3>❤️ Donasi Masjid</h3><p class="muted">Renovasi/operasional masjid & musholla.</p></div></div>
       </div>
-    </div>
-  </section>
-
-  <!-- NEWSLETTER -->
-  <section class="section">
-    <div class="container grid grid-2" style="align-items:center">
-      <div>
-        <h3>Berlangganan Info</h3>
-        <p class="muted">Dapatkan update artikel, jadwal kajian, dan live terbaru (JST).</p>
-      </div>
-      <form onsubmit="event.preventDefault();alert('Terima kasih!');" class="grid" style="grid-template-columns:1fr auto;gap:.6rem">
-        <input type="email" class="input" placeholder="Email Anda" required />
-        <button class="btn primary" type="submit">Daftar</button>
-      </form>
     </div>
   </section>
 
   <!-- TENTANG & KONTAK -->
-  <section id="tentang" class="section" style="background:var(--bg-soft)">
-    <div class="container grid grid-2">
-      <div>
-        <h2>Tentang Jepang Mengaji</h2>
-        <p class="muted">Komunitas Muslim Indonesia di Jepang yang fokus pada penyebaran dakwah sunnah, penguatan ukhuwah, dan kontribusi sosial. Kami menyelenggarakan kajian rutin, kelas Al-Qur'an, dan kegiatan berbagi.</p>
-        <ul class="muted">
-          <li>Fokus: Akidah, Akhlak, dan Fikih Mu'amalah</li>
-          <li>Bahasa: Indonesia & 日本語 (dasar)</li>
-          <li>Jangkauan: Tokyo, Osaka, Nagoya, Nagano dan online seluruh Jepang</li>
-        </ul>
-      </div>
-      <div class="card"><div class="p">
-        <h3>Gabung Komunitas</h3>
-        <div class="flex" style="flex-wrap:wrap;gap:.6rem">
-          <a class="btn" href="#">Telegram</a>
-          <a class="btn" href="#">WhatsApp</a>
-          <a class="btn" href="#">LINE</a>
-        </div>
-      </div></div>
-    </div>
+  <section id="tentang" class="section">
+    <div class="container"><h2>Tentang Jepang Mengaji</h2><p class="muted">Komunitas Muslim Indonesia di Jepang.</p></div>
   </section>
-
   <section id="kontak" class="section">
-    <div class="container grid grid-2">
-      <div>
-        <h2>Kontak Panitia</h2>
-        <p class="muted">Ada pertanyaan? Sampaikan di sini.</p>
-        <form class="grid" style="gap:.6rem" onsubmit="event.preventDefault();alert('Pesan terkirim.');">
-          <div class="grid" style="grid-template-columns:1fr 1fr;gap:.6rem">
-            <input class="input" placeholder="Nama" required />
-            <input class="input" type="email" placeholder="Email" required />
-          </div>
-          <input class="input" placeholder="Subjek" required />
-          <textarea class="input" rows="6" placeholder="Pesan Anda"></textarea>
-          <button class="btn primary" type="submit">Kirim</button>
-        </form>
-      </div>
-      <div class="card"><div class="p">
-        <h3>Alamat & Jadwal</h3>
-        <div class="muted">Base: Tokyo (JST, UTC+9)</div>
-        <div class="muted">Email: info@jepangmengaji.jp (contoh)</div>
-        <div class="muted">Jam respons: 10:00–18:00 JST</div>
-      </div></div>
-    </div>
+    <div class="container"><h2>Kontak Panitia</h2><p class="muted">Email: info@jepangmengaji.jp</p></div>
   </section>
 
   <!-- FOOTER -->
   <footer class="footer">
-    <div class="container" style="padding:1.2rem 0;display:flex;gap:1rem;flex-wrap:wrap;align-items:center;justify-content:space-between">
-      <div class="flex" style="gap:.6rem">
-        <img src="jm.jpeg" alt="Logo" style="height:28px;width:auto;border-radius:.25rem" onerror="this.style.display='none'"/>
-        <span class="muted">© <span id="year"></span> Jepang Mengaji</span>
-      </div>
-      <div class="flex" style="gap:1rem">
-        <a class="muted" href="#">Kebijakan Privasi</a>
-        <a class="muted" href="#">Ketentuan</a>
-        <a class="muted" href="#kontak">Kontak</a>
-      </div>
+    <div class="container" style="padding:1rem 0;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap">
+      <div class="flex" style="gap:.5rem"><img src="jm.jpeg" alt="Logo" style="height:24px"/><span class="muted">© <span id="year"></span> Jepang Mengaji</span></div>
+      <div class="flex" style="gap:1rem"><a class="muted" href="#">Privasi</a><a class="muted" href="#">Ketentuan</a></div>
     </div>
   </footer>
 
+  <!-- tombol back to top -->
+  <button id="backToTop">↑</button>
+
   <script>
-    // ================== CONFIG (edit di sini) ==================
-    // Kosongkan ("") untuk pakai data demo. Isi dengan URL CSV dari Google Sheets (Publish to the web)
-    const ARTICLES_CSV_URL = ""; // contoh: "https://docs.google.com/spreadsheets/d/e/.../pub?gid=0&single=true&output=csv"
-    const KAJIAN_CSV_URL   = ""; // contoh: "https://docs.google.com/spreadsheets/d/e/.../pub?gid=12345&single=true&output=csv"
+    document.getElementById('year').textContent=new Date().getFullYear();
 
-    // YouTube video ID (opsional). Bisa diubah lewat input juga.
-    let videoId = ""; // contoh: "abcdEFGH123"
-
-    // ================== THEME TOGGLE ==================
-    const themeToggle = document.getElementById('themeToggle');
-    const savedTheme = localStorage.getItem('jm-theme');
-    if(savedTheme){ document.documentElement.setAttribute('data-theme', savedTheme); }
-    themeToggle.addEventListener('click', ()=>{
-      const cur = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-      document.documentElement.setAttribute('data-theme', cur);
-      localStorage.setItem('jm-theme', cur);
+    // tombol back to top
+    const btn=document.getElementById('backToTop');
+    window.addEventListener('scroll',()=>{
+      if(window.scrollY>200){btn.style.display='block';}else{btn.style.display='none';}
     });
-
-    // ================== YEAR ==================
-    document.getElementById('year').textContent = new Date().getFullYear();
-
-    // ================== LIVE PLAYER ==================
-    function mountIframe(targetId, vid){
-      const host = document.getElementById(targetId);
-      if(!host) return;
-      host.innerHTML = vid ? `<iframe src="https://www.youtube.com/embed/${vid}" title="YouTube" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>` : '<div class="center muted">Belum ada Live aktif</div>';
-    }
-    const applyBtn = document.getElementById('applyId');
-    const ytIdInput = document.getElementById('ytId');
-    applyBtn.addEventListener('click', ()=>{
-      videoId = ytIdInput.value.trim();
-      mountIframe('livePlayer', videoId);
-      mountIframe('livePlayer2', videoId);
-    });
-    if(videoId){ mountIframe('livePlayer', videoId); mountIframe('livePlayer2', videoId); }
-
-    // ================== DATA HELPERS ==================
-    const demoArticles = [
-      {id:'a1', title:'Adab Menuntut Ilmu di Negeri Sakura', excerpt:'Panduan ringkas adab menuntut ilmu untuk Muslim Indonesia di Jepang.', date:'2025-08-15', tags:'Adab,Talabul Ilmi', href:'#'},
-      {id:'a2', title:'Fikih Pekerja: Waktu Shalat di Pabrik', excerpt:'Strategi mengatur jadwal shalat saat kerja shift dan lembur.', date:'2025-08-10', tags:'Fikih,Kerja', href:'#'},
-      {id:'a3', title:"Bahagia dengan Al-Qur'an: Tips Muraja'ah", excerpt:'Cara menjaga hafalan di tengah kesibukan kuliah dan kerja.', date:'2025-08-01', tags:"Qur'an,Motivasi", href:'#'},
-    ];
-    const demoKajian = [
-      {id:'k1', judul:'Kajian Rutin Kitab Riyadhus Shalihin', ustadz:'Ustadz Ahmad Fulan, Lc', waktu:'Ahad, 20:00 JST', lokasi:'Tokyo (Online & Onsite)', mapUrl:'#'},
-      {id:'k2', judul:'Dauroh Akhir Pekan: Tauhid', ustadz:'Ustadz Yusril, MA', waktu:'Sabtu, 09:00–16:00 JST', lokasi:'Osaka (Onsite)', mapUrl:'#'},
-      {id:'k3', judul:'Kelas Bahasa Arab Pemula', ustadz:'Ustadz Syam', waktu:'Rabu, 19:30 JST', lokasi:'Nagano (Online)', mapUrl:'#'},
-    ];
-
-    async function fetchCSV(url){
-      const res = await fetch(url);
-      const text = await res.text();
-      // naive CSV parser (tanpa kutip kompleks) — cukup untuk format sederhana dari Google Sheets
-      const rows = text.split(/\r?\n/).filter(Boolean).map(r=>r.split(','));
-      const header = rows.shift();
-      return rows.map(r=>Object.fromEntries(r.map((v,i)=>[header[i]?.trim(), v.trim()])));
-    }
-
-    function renderArticles(list){
-      const wrap = document.getElementById('articles');
-      wrap.innerHTML = '';
-      list.forEach(a=>{
-        const card = document.createElement('article');
-        card.className = 'card';
-        card.innerHTML = `
-          <div class="p">
-            <h3 class="line-2">${a.title}</h3>
-            <div class="kicker muted">${(a.tags||'').split(/\s*,\s*/).filter(Boolean).map(t=>`<span class="badge" style="margin-right:.3rem">${t}</span>`).join('')}</div>
-            <p class="muted line-3">${a.excerpt||''}</p>
-            <div class="kicker muted">${(a.date? new Date(a.date).toLocaleDateString('ja-JP',{year:'numeric',month:'short',day:'numeric'}):'')}</div>
-            <div class="space"></div>
-            <a class="btn right" href="${a.href||'#'}">Baca Selengkapnya</a>
-          </div>`;
-        wrap.appendChild(card);
-      });
-    }
-
-    function renderKajian(list){
-      const wrap = document.getElementById('kajians');
-      wrap.innerHTML = '';
-      list.forEach(k=>{
-        const card = document.createElement('article');
-        card.className = 'card';
-        card.innerHTML = `
-          <div class="p">
-            <h3 class="line-2">${k.judul}</h3>
-            <div class="kicker">👤 ${k.ustadz||''}</div>
-            <div class="kicker">🗓️ ${k.waktu||''}</div>
-            <div class="kicker">📍 ${k.lokasi||''}</div>
-            <div class="space"></div>
-            <div class="flex">
-              <a class="btn" href="${k.mapUrl||'#'}">Lihat Lokasi/Link</a>
-              <a class="btn soft" href="#kontak">Tanya Panitia</a>
-            </div>
-          </div>`;
-        wrap.appendChild(card);
-      });
-    }
-
-    async function initData(){
-      try{
-        const [articles, kajian] = await Promise.all([
-          ARTICLES_CSV_URL ? fetchCSV(ARTICLES_CSV_URL) : Promise.resolve(demoArticles),
-          KAJIAN_CSV_URL ? fetchCSV(KAJIAN_CSV_URL) : Promise.resolve(demoKajian),
-        ]);
-        renderArticles(articles);
-        renderKajian(kajian);
-      }catch(err){
-        console.error(err);
-        renderArticles(demoArticles);
-        renderKajian(demoKajian);
-      }
-    }
-
-    initData();
+    btn.addEventListener('click',()=>{window.scrollTo({top:0,behavior:'smooth'});});
   </script>
 </body>
 </html>
-
