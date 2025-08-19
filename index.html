@@ -109,7 +109,7 @@
         <h3>Live Stream</h3>
         <div class="aspect-video" id="livePlayer"><div class="center muted">Belum ada Live aktif</div></div>
         <div class="space"></div>
-        <div class="flex"><input id="ytId" class="input" placeholder="Masukkan YouTube Video ID"/><button class="btn" id="applyId">Terapkan</button></div>
+        <div class="flex"><input id="ytId" class="input" placeholder="Masukkan YouTube Video ID/URL"/><button class="btn" id="applyId">Terapkan</button></div>
       </div></div>
     </div>
   </section>
@@ -145,14 +145,12 @@
 
           <h4>Nomor Rekening</h4>
           <ul class="muted" style="margin-top:.2rem;line-height:1.7">
-            <!-- GANTI SESUAI DATA RESMI -->
             <li><strong>SMBC Indonesia / Jenius</strong> a.n. <em>Wahyu Setiawan</em> — <strong>90220139952</strong></li>
             <li><strong>yucho ginko</strong> a.n. <em>トリサンボド</em> — <strong>14660-20688191</strong></li>
           </ul>
 
           <div class="space"></div>
           <div class="flex" style="flex-wrap:wrap;gap:.5rem">
-            <!-- Halaman detail internal -->
             <a class="btn primary" href="donasi-dauroh.html">💳 Link Donasi</a>
             <a class="btn" href="https://wa.me/817084810427?text=Assalamu%27alaikum%2C%20saya%20konfirmasi%20%2F%20bertanya%20Donasi%20Dauroh.%0ANama%3A%20-%0AJumlah%3A%20-%0ATanggal%3A%20-%0ATransfer%20ke%20(REK)%3A%20-%0A" target="_blank" rel="noopener">✅ Konfirmasi via WhatsApp</a>
             <a class="btn" href="#kontak">📞 Kontak Panitia</a>
@@ -166,14 +164,12 @@
 
           <h4>Nomor Rekening</h4>
           <ul class="muted" style="margin-top:.2rem;line-height:1.7">
-            <!-- GANTI SESUAI DATA RESMI -->
             <li><strong>SMBC Indonesia / Jenius</strong> a.n. <em>Wahyu Setiawan</em> — <strong>90220139952</strong></li>
             <li><strong>yucho ginko</strong> a.n. <em>トリサンボド</em> — <strong>14660-20688191</strong></li>
           </ul>
 
           <div class="space"></div>
           <div class="flex" style="flex-wrap:wrap;gap:.5rem">
-            <!-- Halaman detail internal -->
             <a class="btn primary" href="donasi-masjid.html">💳 Link Donasi</a>
             <a class="btn" href="https://wa.me/817084810427?text=Assalamu%27alaikum%2C%20saya%20konfirmasi%20%2F%20bertanya%20Donasi%20Masjid.%0ANama%3A%20-%0AJumlah%3A%20-%0ATanggal%3A%20-%0ATransfer%20ke%20(REK)%3A%20-%0A" target="_blank" rel="noopener">✅ Konfirmasi via WhatsApp</a>
             <a class="btn" href="#kontak">📞 Kontak Panitia</a>
@@ -211,10 +207,8 @@
       <div class="card"><div class="p">
         <h3>Gabung Komunitas</h3>
         <div class="flex" style="flex-wrap:wrap;gap:.5rem;margin:.5rem 0 1rem">
-          <!-- ISI TELEGRAM RESMI JIKA ADA -->
           <a class="btn primary" href="https://t.me/jepangmengaji" target="_blank" rel="noopener">📲 Telegram Group</a>
           <a class="btn" href="https://t.me/jepangmengaji_channel" target="_blank" rel="noopener">📣 Telegram Channel</a>
-          <!-- YOUTUBE & INSTAGRAM SESUAI PERMINTAAN -->
           <a class="btn" href="https://www.youtube.com/@jepangmengaji1390" target="_blank" rel="noopener">▶️ YouTube</a>
           <a class="btn" href="https://www.instagram.com/jepangmengaji/?hl=en" target="_blank" rel="noopener">📷 Instagram</a>
         </div>
@@ -257,7 +251,6 @@
       <aside class="card"><div class="p">
         <h3>Kontak Langsung & Konfirmasi</h3>
         <ul class="muted" style="margin-top:.2rem;line-height:1.9">
-          <!-- GANTI NAMA & NOMOR INI -->
           <li>
             <strong>CP Donasi Dauroh — Akhi Tri Sambodo</strong><br/>
             <a href="https://wa.me/817084810427?text=Assalamu%27alaikum%2C%20saya%20ingin%20konfirmasi%20Donasi%20Dauroh.%0ANama%3A%20-%0ANominal%3A%20-%0ATanggal%3A%20-%0ATransfer%20ke%3A%20(BCA%20%2F%20MUFG)" target="_blank" rel="noopener">WhatsApp</a> ·
@@ -303,7 +296,10 @@
     // CSV URLs
     const ARTICLES_CSV_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vQiIOueuc-YygpdulT9x9ZjJUA2jlaWXu2uGzwgHcugNebW5HLjR66luq3kHmqDvTmNJlSjpjsIQ6PG/pub?gid=0&single=true&output=csv";
     const KAJIAN_CSV_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vQiIOueuc-YygpdulT9x9ZjJUA2jlaWXu2uGzwgHcugNebW5HLjR66luq3kHmqDvTmNJlSjpjsIQ6PG/pub?gid=450885199&single=true&output=csv";
-    let videoId="";
+
+    // Default video dari: https://www.youtube.com/watch?v=BXNvVAr8cCI
+    const DEFAULT_VIDEO_ID = "BXNvVAr8cCI";
+    let videoId = DEFAULT_VIDEO_ID;
 
     // Theme toggle
     document.getElementById('themeToggle').addEventListener('click',()=>{
@@ -315,23 +311,42 @@
     // Year
     document.getElementById('year').textContent=new Date().getFullYear();
 
-    // Back to top show/hide + smooth scroll
+    // Back to top
     const backBtn=document.getElementById('backTop');
     window.addEventListener('scroll',()=>{backBtn.style.display=window.scrollY>300?'block':'none'});
     backBtn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
 
+    // Ekstrak ID YouTube dari URL atau langsung pakai ID
+    function extractYouTubeId(input){
+      const m = String(input).match(/(?:v=|youtu\.be\/|embed\/)([A-Za-z0-9_-]{11})/);
+      return m ? m[1] : String(input).trim();
+    }
+
     // Live player
     function mountIframe(id,vid){
       const el=document.getElementById(id);
-      el.innerHTML=vid?`<iframe src="https://www.youtube.com/embed/${vid}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`:'<div class="center muted">Belum ada Live aktif</div>';
+      el.innerHTML=vid
+        ? `<iframe src="https://www.youtube.com/embed/${vid}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`
+        : '<div class="center muted">Belum ada Live aktif</div>';
     }
+
+    // Render video default pada load
+    mountIframe('livePlayer', videoId);
+    mountIframe('livePlayer2', videoId);
+
+    // Prefill input dengan URL default (opsional)
+    const ytInput = document.getElementById('ytId');
+    if (ytInput) ytInput.value = `https://www.youtube.com/watch?v=${videoId}`;
+
+    // Tombol Terapkan: terima URL atau ID
     document.getElementById('applyId').addEventListener('click',()=>{
-      videoId=document.getElementById('ytId').value.trim();
-      mountIframe('livePlayer',videoId);
-      mountIframe('livePlayer2',videoId);
+      const raw = ytInput.value.trim();
+      videoId = extractYouTubeId(raw);
+      mountIframe('livePlayer', videoId);
+      mountIframe('livePlayer2', videoId);
     });
 
-    // Robust CSV parser + cache-buster
+    // CSV parser + render
     async function fetchCSV(url){
       const res=await fetch(url+(url.includes('?')?'&':'?')+'_='+Date.now());
       const text=(await res.text()).replace(/^\uFEFF/,'');
