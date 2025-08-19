@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Jepang Mengaji — Mengaji sesuai sunnah, Berjejaring, Berkontribusi</title>
+  <title>Jepang Mengaji — Mengaji Sesuai Sunnah, Berdakwah, Berkontribusi</title>
   <meta name="description" content="Artikel keislaman, info kajian, live YouTube, dan donasi kegiatan dakwah di Jepang." />
   <link rel="icon" href="jm.jpeg" />
   <script>(function(){try{var t=localStorage.getItem('jm-theme'); if(t) document.documentElement.setAttribute('data-theme', t);}catch(e){}})();</script>
@@ -72,6 +72,27 @@
       background:var(--primary);color:#fff;cursor:pointer;box-shadow:var(--shadow);display:none;font-size:18px;
     }
     #backTop:hover{transform:translateY(-2px)}
+
+    /* === Details / Summary (Pedoman) === */
+    details{
+      border:1px solid var(--border);
+      border-radius:.6rem;
+      background:var(--card);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    details summary{
+      list-style:none;
+      display:flex;align-items:center;gap:.5rem;
+      padding:.6rem .8rem;
+      cursor:pointer;
+      font-weight:600;
+      user-select:none;
+    }
+    details summary::-webkit-details-marker{display:none}
+    details .chev{margin-left:auto;transition:transform .2s}
+    details[open] .chev{transform:rotate(180deg)}
+    details .content{padding:.8rem .9rem}
   </style>
 </head>
 <body>
@@ -212,14 +233,24 @@
           <a class="btn" href="https://www.youtube.com/@jepangmengaji1390" target="_blank" rel="noopener">▶️ YouTube</a>
           <a class="btn" href="https://www.instagram.com/jepangmengaji/?hl=en" target="_blank" rel="noopener">📷 Instagram</a>
         </div>
-        <details>
-          <summary>Pedoman singkat anggota</summary>
-          <ul class="muted" style="line-height:1.7;margin:.6rem 0 0">
-            <li>Jaga adab & hindari debat.</li>
-            <li>Konten promosi/jualan perlu izin admin.</li>
-            <li>Jaga privasi dan data anggota.</li>
-          </ul>
+
+        <!-- Pedoman: sekarang klik bisa buka/tutup -->
+        <details id="pedoman">
+          <summary role="button" tabindex="0">
+            Pedoman singkat anggota
+            <span class="chev">▾</span>
+          </summary>
+          <div class="content">
+            <ul class="muted" style="line-height:1.7;margin:.2rem 0 0">
+              <li>Jaga adab & hindari debat.</li>
+              <li>Konten promosi/jualan perlu izin admin.</li>
+              <li>Jaga privasi dan data anggota.</li>
+            </ul>
+            <!-- Opsional: link ke halaman pedoman penuh -->
+            <!-- <div style="margin-top:.6rem"><a class="btn" href="pedoman.html">Baca pedoman lengkap</a></div> -->
+          </div>
         </details>
+
       </div></div>
     </div>
   </section>
@@ -401,4 +432,3 @@
   </script>
 </body>
 </html>
-
