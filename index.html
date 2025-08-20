@@ -14,15 +14,28 @@
     [data-theme="dark"]{--bg:#0f172a;--bg-soft:#111827;--text:#e5e7eb;--muted:#94a3b8;
       --card:#111827;--border:#1f2937;--shadow:0 10px 30px rgba(0,0,0,.25)}
 
-    body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;color:var(--text);
-      background:linear-gradient(rgba(255,255,255,0.86), rgba(255,255,255,0.86)),url("https://images.unsplash.com/photo-1523217582562-09d0def993a6?auto=format&fit=crop&w=1920&q=80") no-repeat top center fixed;
-      background-size:cover}
-    [data-theme="dark"] body{background:linear-gradient(rgba(15,23,42,.8), rgba(15,23,42,.9)),url("https://images.unsplash.com/photo-1523217582562-09d0def993a6?auto=format&fit=crop&w=1920&q=80") no-repeat top center fixed;
-      background-size:cover}
+    /* ==== FIX: background tanpa glitch (pakai ::before, bukan attachment: fixed) ==== */
+    html,body{height:100%}
+    body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,"Noto Sans",sans-serif;color:var(--text);background:var(--bg)}
+    body::before{
+      content:""; position:fixed; inset:0; z-index:-1;
+      background:
+        linear-gradient(rgba(255,255,255,0.86), rgba(255,255,255,0.86)),
+        url("https://images.unsplash.com/photo-1523217582562-09d0def993a6?auto=format&fit=crop&w=1920&q=80")
+        center/cover no-repeat;
+      will-change:transform; /* kurangi banding di Windows */
+    }
+    [data-theme="dark"] body::before{
+      background:
+        linear-gradient(rgba(15,23,42,0.80), rgba(15,23,42,0.90)),
+        url("https://images.unsplash.com/photo-1523217582562-09d0def993a6?auto=format&fit=crop&w=1920&q=80")
+        center/cover no-repeat;
+    }
 
     a{text-decoration:none;color:inherit}
     img{max-width:100%;display:block}
     .container{max-width:1120px;margin:0 auto;padding:0 1rem}
+
     .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.6rem .9rem;border:1px solid var(--border);
       border-radius:.7rem;cursor:pointer;background:var(--card);color:var(--text);transition:transform .15s}
     .btn:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
@@ -30,7 +43,8 @@
     .btn.soft{background:transparent;color:var(--primary);border-color:var(--primary)}
     .badge{padding:.1rem .4rem;font-size:.75rem;background:rgba(148,163,184,.25);border:1px solid var(--border);border-radius:.4rem}
 
-    .nav{position:sticky;top:0;z-index:40;background:color-mix(in oklab,var(--bg) 85%, transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+    .nav{position:sticky;top:0;z-index:40;background:color-mix(in oklab,var(--bg) 85%, transparent);
+      backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
     .nav-inner{display:flex;justify-content:space-between;align-items:center;padding:.7rem 0}
     .nav-links{display:none;gap:1rem}
     @media(min-width:768px){.nav-links{display:flex}}
@@ -54,14 +68,19 @@
     [data-theme="dark"] .logo{background:#0b1220}
 
     .input{padding:.45rem .6rem;border:1px solid var(--border);border-radius:.6rem;background:var(--card);color:var(--text)}
-    #backTop{position:fixed;bottom:20px;right:20px;z-index:50;width:44px;height:44px;border:none;border-radius:50%;background:var(--primary);color:#fff;cursor:pointer;box-shadow:var(--shadow);display:none;font-size:18px}
+    #backTop{
+      position:fixed;bottom:20px;right:20px;z-index:50;width:44px;height:44px;border:none;border-radius:50%;
+      background:var(--primary);color:#fff;cursor:pointer;box-shadow:var(--shadow);display:none;font-size:18px;
+    }
     #backTop:hover{transform:translateY(-2px)}
+
     details{border:1px solid var(--border);border-radius:.6rem;background:var(--card);box-shadow:var(--shadow);overflow:hidden}
     details summary{list-style:none;display:flex;align-items:center;gap:.5rem;padding:.6rem .8rem;cursor:pointer;font-weight:600;user-select:none}
     details summary::-webkit-details-marker{display:none}
     details .chev{margin-left:auto;transition:transform .2s}
     details[open] .chev{transform:rotate(180deg)}
     details .content{padding:.8rem .9rem}
+
     .video-thumb{border-radius:.7rem;overflow:hidden;border:1px solid var(--border)}
   </style>
 </head>
@@ -87,7 +106,7 @@
       <div class="flex">
         <button class="btn soft" id="themeToggle" aria-label="Toggle theme">🌗</button>
         <a class="btn primary" href="#donasi">❤️ Donasi</a>
-        <!-- search navbar -->
+        <!-- Search navbar -->
         <form id="navSearch" style="margin-left:.5rem" onsubmit="event.preventDefault();var q=this.q.value.trim();location.href='arsip.html'+(q?('?q='+encodeURIComponent(q)):'');">
           <input name="q" type="search" placeholder="Cari… (mis. akidah)" class="input" style="width:180px"/>
         </form>
@@ -96,7 +115,200 @@
   </header>
 
   <!-- HERO -->
-  <!-- … (isi sama seperti versi sebelumnya dengan player live dsb) … -->
+  <section class="hero">
+    <div class="container grid grid-2" style="align-items:center;gap:1.5rem">
+      <div>
+        <h1>Mengaji, Berjejaring, <span style="color:var(--primary)">Berkontribusi</span> di Jepang</h1>
+        <p class="muted">Artikel, info kajian sunnah, live YouTube, dan donasi kegiatan dakwah di Jepang.</p>
+        <div class="flex" style="flex-wrap:wrap;gap:.5rem">
+          <a class="btn primary" href="#kajian">📅 Lihat Kajian</a>
+          <a class="btn" href="#artikel">📖 Artikel</a>
+          <a class="btn" href="live.html">▶️ Live</a>
+          <a class="btn" href="arsip.html">🗂️ Arsip</a>
+        </div>
+      </div>
+      <div class="card"><div class="p">
+        <h3>Live Stream</h3>
+        <div class="aspect-video" id="livePlayer"><div class="center muted">Belum ada Live aktif</div></div>
+        <div class="space"></div>
+        <div class="flex"><input id="ytId" class="input" placeholder="Masukkan YouTube Video ID/URL (kosongkan untuk balik ke live)"/><button class="btn" id="applyId">Terapkan</button></div>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- ARTIKEL -->
+  <section id="artikel" class="section">
+    <div class="container"><h2>Artikel Terbaru</h2><div id="articles" class="grid grid-3"></div></div>
+  </section>
+
+  <!-- KAJIAN -->
+  <section id="kajian" class="section" style="background:var(--bg-soft)">
+    <div class="container"><h2>Info Kajian</h2><div id="kajians" class="grid grid-3"></div></div>
+  </section>
+
+  <!-- LIVE (preview) -->
+  <section id="live" class="section">
+    <div class="container grid grid-2">
+      <div class="card"><div class="p"><h3>Player</h3><div class="aspect-video" id="livePlayer2"><div class="center muted">Memuat live channel…</div></div></div></div>
+      <div class="card"><div class="p">
+        <h3>Pengumuman Live</h3>
+        <p class="muted">InsyaAllah Sabtu, 19:30 JST. Tema: Akidah 1.</p>
+        <div class="space"></div>
+        <a class="btn primary" href="live.html">🔴 Buka Halaman Live</a>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- VIDEO TERBARU -->
+  <section class="section" style="background:var(--bg-soft)">
+    <div class="container">
+      <div class="flex" style="align-items:center">
+        <h2>Video Terbaru</h2>
+        <a class="btn right" href="arsip.html">🗂️ Lihat Semua Arsip</a>
+      </div>
+      <div id="videosHome" class="grid grid-3"></div>
+    </div>
+  </section>
+
+  <!-- DONASI -->
+  <section id="donasi" class="section">
+    <div class="container">
+      <h2>Donasi</h2>
+      <div class="grid grid-2">
+        <article class="card" id="donasi-dauroh"><div class="p">
+          <h3>❤️ Donasi Dauroh</h3>
+          <p class="muted">Dukung penyelenggaraan dauroh (pemateri, tempat, konsumsi, dokumentasi).</p>
+          <h4>Nomor Rekening</h4>
+          <ul class="muted" style="margin-top:.2rem;line-height:1.7">
+            <li><strong>SMBC Indonesia / Jenius</strong> a.n. <em>Wahyu Setiawan</em> — <strong>90220139952</strong></li>
+            <li><strong>yucho ginko</strong> a.n. <em>トリサンボド</em> — <strong>14660-20688191</strong></li>
+          </ul>
+          <div class="space"></div>
+          <div class="flex" style="flex-wrap:wrap;gap:.5rem">
+            <a class="btn primary" href="donasi-dauroh.html">💳 Link Donasi</a>
+            <a class="btn" href="https://wa.me/817084810427?text=Assalamu%27alaikum%2C%20saya%20konfirmasi%20%2F%20bertanya%20Donasi%20Dauroh.%0ANama%3A%20-%0AJumlah%3A%20-%0ATanggal%3A%20-%0ATransfer%20ke%20(REK)%3A%20-%0A" target="_blank" rel="noopener">✅ Konfirmasi via WhatsApp</a>
+            <a class="btn" href="#kontak">📞 Kontak Panitia</a>
+          </div>
+        </div></article>
+
+        <article class="card" id="donasi-masjid"><div class="p">
+          <h3>❤️ Donasi Masjid</h3>
+          <p class="muted">Untuk renovasi/operasional,pembelian bangunan masjid & musholla (sewa, listrik, kebersihan, peralatan).</p>
+          <h4>Nomor Rekening</h4>
+          <ul class="muted" style="margin-top:.2rem;line-height:1.7">
+            <li><strong>SMBC Indonesia / Jenius</strong> a.n. <em>Wahyu Setiawan</em> — <strong>90220139952</strong></li>
+            <li><strong>yucho ginko</strong> a.n. <em>トリサンボド</em> — <strong>14660-20688191</strong></li>
+          </ul>
+          <div class="space"></div>
+          <div class="flex" style="flex-wrap:wrap;gap:.5rem">
+            <a class="btn primary" href="donasi-masjid.html">💳 Link Donasi</a>
+            <a class="btn" href="https://wa.me/817084810427?text=Assalamu%27alaikum%2C%20saya%20konfirmasi%20%20Donasi%20Masjid.%0ANama%3A%20-%0ANominal%3A%20-%0ATanggal%3A%20-%0ATransfer%20ke%3A%20(SMBC%20%2F%20Yucho)" target="_blank" rel="noopener">✅ Konfirmasi via WhatsApp</a>
+            <a class="btn" href="#kontak">📞 Kontak Panitia</a>
+          </div>
+        </div></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEWSLETTER -->
+  <section class="section">
+    <div class="container grid grid-2" style="align-items:center">
+      <div><h3>Berlangganan Info</h3><p class="muted">Dapatkan update artikel & kajian.</p></div>
+      <form onsubmit="event.preventDefault();alert('Terima kasih!');" class="grid" style="grid-template-columns:1fr auto;gap:.6rem">
+        <input type="email" class="input" placeholder="Email Anda" required/>
+        <button class="btn primary">Daftar</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- TENTANG & GABUNG KOMUNITAS -->
+  <section id="tentang" class="section" style="background:var(--bg-soft)">
+    <div class="container grid grid-2">
+      <div>
+        <h2>Tentang Jepang Mengaji</h2>
+        <p class="muted">Komunitas Muslim Indonesia (non formal) di Jepang. Kegiatan: kajian rutin, dauroh, kelas bahasa arab, dan aksi sosial.</p>
+        <ul class="muted" style="line-height:1.7;margin:.5rem 0 0">
+          <li>Terbuka untuk ikhwan & akhwat.</li>
+          <li>Info kegiatan dipublikasikan di Whatsapp Grup & kanal sosial.</li>
+          <li>Bahasa utama: Indonesia</li>
+        </ul>
+      </div>
+
+      <div class="card"><div class="p">
+        <h3>Gabung Komunitas</h3>
+        <div class="flex" style="flex-wrap:wrap;gap:.5rem;margin:.5rem 0 1rem">
+          <a class="btn primary" href="https://t.me/jepangmengaji" target="_blank" rel="noopener">📲 Whatsapp Group</a>
+          <a class="btn" href="https://t.me/jepangmengaji_channel" target="_blank" rel="noopener">📣 Telegram Channel</a>
+          <a class="btn" href="https://www.youtube.com/@jepangmengaji1390" target="_blank" rel="noopener">▶️ YouTube</a>
+          <a class="btn" href="https://www.instagram.com/jepangmengaji/?hl=en" target="_blank" rel="noopener">📷 Instagram</a>
+        </div>
+
+        <details id="pedoman">
+          <summary role="button" tabindex="0">
+            Pedoman singkat anggota
+            <span class="chev">▾</span>
+          </summary>
+          <div class="content">
+            <ul class="muted" style="line-height:1.7;margin:.2rem 0 0">
+              <li>Jaga adab & hindari debat.</li>
+              <li>Konten promosi/jualan perlu izin admin.</li>
+              <li>Jaga privasi dan data anggota.</li>
+            </ul>
+          </div>
+        </details>
+
+      </div></div>
+    </div>
+  </section>
+
+  <!-- KONTAK -->
+  <section id="kontak" class="section">
+    <div class="container grid grid-2">
+      <div>
+        <h2>Kontak Panitia</h2>
+        <p class="muted">Ada pertanyaan seputar kajian atau donasi? Kirim pesan melalui form atau hubungi kontak di samping.</p>
+        <form onsubmit="event.preventDefault();alert('Pesan terkirim');">
+          <div class="grid" style="grid-template-columns:1fr 1fr;gap:.6rem">
+            <input class="input" placeholder="Nama" required/>
+            <input class="input" type="email" placeholder="Email" required/>
+          </div>
+          <input class="input" placeholder="Subjek (mis. Donasi Dauroh / Donasi Masjid / Info Kajian)" required/>
+          <textarea class="input" rows="4" placeholder="Pesan"></textarea>
+          <div class="flex" style="margin-top:.5rem;gap:.5rem">
+            <a class="btn" href="#donasi-dauroh">↗ Donasi Dauroh</a>
+            <a class="btn" href="#donasi-masjid">↗ Donasi Masjid</a>
+            <button class="btn primary" type="submit">Kirim</button>
+          </div>
+        </form>
+      </div>
+
+      <aside class="card"><div class="p">
+        <h3>Kontak Langsung & Konfirmasi</h3>
+        <ul class="muted" style="margin-top:.2rem;line-height:1.9">
+          <li><strong>CP Donasi Dauroh — Akhi Tri Sambodo</strong><br/>
+            <a href="https://wa.me/817084810427?text=Assalamu%27alaikum%2C%20saya%20ingin%20konfirmasi%20Donasi%20Dauroh.%0ANama%3A%20-%0ANominal%3A%20-%0ATanggal%3A%20-%0ATransfer%20ke%3A%20(SMBC%20%2F%20Yucho)" target="_blank" rel="noopener">WhatsApp</a> ·
+            <a href="tel:+817084810427">Telp</a></li>
+          <li><strong>CP Donasi Masjid — Akhi Tri Sambodo</strong><br/>
+            <a href="https://wa.me/817084810427?text=Assalamu%27alaikum%2C%20saya%20ingin%20konfirmasi%20Donasi%20Masjid.%0ANama%3A%20-%0ANominal%3A%20-%0ATanggal%3A%20-%0ATransfer%20ke%3A%20(SMBC%20%2F%20Yucho)" target="_blank" rel="noopener">WhatsApp</a> ·
+            <a href="tel:+817084810427">Telp</a></li>
+          <li>✉️ Email Panitia — <a href="mailto:panitia@jepangmengaji.org">panitia@jepangmengaji.org</a></li>
+        </ul>
+
+        <div class="space"></div>
+        <h3>Alamat & Jadwal</h3>
+        <p class="muted" style="margin:.2rem 0 .6rem">
+          Base: Tokyo (UTC+9) —
+          <a href="https://maps.google.com/?q=Masjid%20Contoh%20Tokyo" target="_blank" rel="noopener">📍 Lihat di Google Maps</a>
+        </p>
+        <ul class="muted" style="line-height:1.7">
+          <li>Sabtu, 19:30 — Kajian Rutin</li>
+          <li>Ahad, 09:00 — Kelas Tahsin</li>
+        </ul>
+        <div class="space"></div>
+        <a class="btn" href="https://calendar.google.com/" target="_blank" rel="noopener">🗓️ Tambah ke Kalender</a>
+      </div></aside>
+    </div>
+  </section>
 
   <!-- FOOTER -->
   <footer class="footer">
@@ -111,12 +323,171 @@
     </div>
   </footer>
 
-  <!-- Back to Top -->
+  <!-- Back to Top floating button -->
   <button id="backTop" title="Kembali ke atas">⬆</button>
 
-  <!-- SCRIPT: sama dengan versi full sebelumnya (live embed, csv, video terbaru dll) -->
   <script>
-    // isi script dari versi sebelumnya tetap (channel live, articles, kajian, rss video terbaru)
+    // ====== DATA SHEETS ======
+    const ARTICLES_CSV_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vQiIOueuc-YygpdulT9x9ZjJUA2jlaWXu2uGzwgHcugNebW5HLjR66luq3kHmqDvTmNJlSjpjsIQ6PG/pub?gid=0&single=true&output=csv";
+    const KAJIAN_CSV_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vQiIOueuc-YygpdulT9x9ZjJUA2jlaWXu2uGzwgHcugNebW5HLjR66luq3kHmqDvTmNJlSjpjsIQ6PG/pub?gid=450885199&single=true&output=csv";
+
+    // ====== YOUTUBE CONFIG ======
+    const CHANNEL_ID = "UC3h0lpsfwETKD9v2mY6WVTQ";
+    const CHANNEL_LIVE_EMBED = `https://www.youtube.com/embed/live_stream?channel=${CHANNEL_ID}`;
+    const YT_RSS = `https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`;
+    const DEFAULT_VIDEO_ID = "BXNvVAr8cCI";
+
+    // Theme toggle
+    document.getElementById('themeToggle').addEventListener('click',()=>{
+      const cur=document.documentElement.getAttribute('data-theme')==='light'?'dark':'light';
+      document.documentElement.setAttribute('data-theme',cur);
+      localStorage.setItem('jm-theme',cur);
+    });
+
+    // Year
+    document.getElementById('year').textContent=new Date().getFullYear();
+
+    // Back to top
+    const backBtn=document.getElementById('backTop');
+    window.addEventListener('scroll',()=>{backBtn.style.display=window.scrollY>300?'block':'none'});
+    backBtn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+    // Ekstrak ID YouTube dari URL atau langsung pakai ID
+    function extractYouTubeId(input){
+      const m = String(input).match(/(?:v=|youtu\.be\/|embed\/)([A-Za-z0-9_-]{11})/);
+      return m ? m[1] : String(input).trim();
+    }
+    // Live player
+    function mountIframeBySrc(id,src){
+      const el=document.getElementById(id);
+      el.innerHTML = src
+        ? `<iframe src="${src}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`
+        : '<div class="center muted">Belum ada Live aktif</div>';
+    }
+    function mountByVideoId(id,vid){
+      mountIframeBySrc(id, vid ? `https://www.youtube.com/embed/${vid}` : "");
+    }
+
+    // Default: live channel
+    mountIframeBySrc('livePlayer', CHANNEL_LIVE_EMBED);
+    mountIframeBySrc('livePlayer2', CHANNEL_LIVE_EMBED);
+
+    // Input manual (override & reset)
+    const ytInput = document.getElementById('ytId');
+    const applyBtn = document.getElementById('applyId');
+    if (ytInput && applyBtn){
+      ytInput.placeholder = "Masukkan YouTube Video ID/URL (kosongkan untuk balik ke live)";
+      applyBtn.addEventListener('click', ()=>{
+        const raw = ytInput.value.trim();
+        if (!raw){
+          mountIframeBySrc('livePlayer', CHANNEL_LIVE_EMBED);
+          mountIframeBySrc('livePlayer2', CHANNEL_LIVE_EMBED);
+          return;
+        }
+        const vid = extractYouTubeId(raw);
+        if (vid && vid.length===11){
+          mountByVideoId('livePlayer', vid);
+          mountByVideoId('livePlayer2', vid);
+        } else {
+          alert("URL/ID YouTube tidak valid. Contoh: https://www.youtube.com/watch?v=XXXXXXXXXXX");
+        }
+      });
+    }
+
+    // CSV parser + render
+    async function fetchCSV(url){
+      const res=await fetch(url+(url.includes('?')?'&':'?')+'_='+Date.now());
+      const text=(await res.text()).replace(/^\uFEFF/,'');
+      const rows=[];let row=[],cell='',inQuotes=false;
+      for(let i=0;i<text.length;i++){
+        const c=text[i],n=text[i+1];
+        if(c=='"'){ if(inQuotes&&n=='"'){cell+='"';i++;} else inQuotes=!inQuotes; }
+        else if(c===','&&!inQuotes){row.push(cell);cell='';}
+        else if((c==='\n'||(c==='\r'&&n==='\n'))&&!inQuotes){ if(c==='\r') i++; row.push(cell); cell=''; if(row.length) rows.push(row); row=[]; }
+        else { cell+=c; }
+      }
+      if(cell||row.length){row.push(cell);rows.push(row)}
+      const header=(rows.shift()||[]).map(h=>h.trim());
+      return rows.map(r=>Object.fromEntries(header.map((h,i)=>[h,(r[i]||'').trim()])));
+    }
+
+    function renderArticles(list){
+      const wrap=document.getElementById('articles'); wrap.innerHTML='';
+      if(!list.length){wrap.innerHTML='<div class="card"><div class="p muted">Belum ada artikel.</div></div>';return}
+      list.forEach(a=>{
+        const card=document.createElement('article');card.className='card';
+        const p=document.createElement('div');p.className='p';
+        const h3=document.createElement('h3');h3.textContent=a.title||'';p.appendChild(h3);
+        const ex=document.createElement('p');ex.className='muted';ex.textContent=a.excerpt||'';p.appendChild(ex);
+        const dt=document.createElement('div');dt.className='muted';dt.textContent=a.date?new Date(a.date).toLocaleDateString('ja-JP',{year:'numeric',month:'short',day:'numeric'}):'';p.appendChild(dt);
+        const btn=document.createElement('a');btn.className='btn right';btn.href=a.href||'#';btn.textContent='Baca';if(/^https?:/i.test(btn.href)){btn.target='_blank';btn.rel='noopener'};p.appendChild(btn);
+        card.appendChild(p);wrap.appendChild(card);
+      });
+    }
+    function renderKajian(list){
+      const wrap=document.getElementById('kajians'); wrap.innerHTML='';
+      if(!list.length){wrap.innerHTML='<div class="card"><div class="p muted">Belum ada kajian.</div></div>';return}
+      list.forEach(k=>{
+        const card=document.createElement('article');card.className='card';
+        const p=document.createElement('div');p.className='p';
+        const h3=document.createElement('h3');h3.textContent=k.judul||'';p.appendChild(h3);
+        const u=document.createElement('div');u.className='muted';u.textContent='👤 '+(k.ustadz||'');p.appendChild(u);
+        const w=document.createElement('div');w.className='muted';w.textContent='🗓️ '+(k.waktu||'');p.appendChild(w);
+        const l=document.createElement('div');l.className='muted';l.textContent='📍 '+(k.lokasi||'');p.appendChild(l);
+        const link=document.createElement('a');link.className='btn';link.href=k.mapUrl||'#';link.textContent='Lihat Lokasi/Link';if(/^https?:/i.test(link.href)){link.target='_blank';link.rel='noopener'};p.appendChild(link);
+        card.appendChild(p);wrap.appendChild(card);
+      });
+    }
+
+    async function initData(){
+      try{
+        const [a,k]=await Promise.all([fetchCSV(ARTICLES_CSV_URL),fetchCSV(KAJIAN_CSV_URL)]);
+        renderArticles(a); renderKajian(k);
+      }catch(e){console.error(e)}
+    }
+    initData();
+
+    // ====== VIDEO TERBARU (RSS YouTube) ======
+    async function fetchYouTubeRSS(url){
+      const res=await fetch(url+(url.includes('?')?'&':'?')+'_='+Date.now());
+      const xml=await res.text();
+      const doc=new DOMParser().parseFromString(xml,"text/xml");
+      const entries=[...doc.querySelectorAll('entry')].map(e=>{
+        const id=(e.querySelector('yt\\:videoId, videoId')||{}).textContent||'';
+        return {
+          id,
+          title:(e.querySelector('title')||{}).textContent||'',
+          published:new Date((e.querySelector('published')||{}).textContent||''),
+          link:`https://www.youtube.com/watch?v=${id}`,
+          thumb:`https://i.ytimg.com/vi/${id}/hqdefault.jpg`,
+        }
+      });
+      return entries.sort((a,b)=>b.published-a.published);
+    }
+    function renderVideosHome(list){
+      const wrap=document.getElementById('videosHome'); wrap.innerHTML='';
+      const show = list.slice(0,6);
+      if(!show.length){wrap.innerHTML='<div class="card"><div class="p muted">Belum ada video.</div></div>';return}
+      show.forEach(v=>{
+        const a=document.createElement('a'); a.className='card'; a.href=v.link; a.target='_blank'; a.rel='noopener';
+        const p=document.createElement('div'); p.className='p';
+        p.innerHTML = `
+          <div class="video-thumb"><img src="${v.thumb}" alt=""></div>
+          <h3 style="margin:.6rem 0 .3rem">${v.title}</h3>
+          <div class="muted">${v.published.toLocaleDateString('ja-JP',{year:'numeric',month:'short',day:'numeric'})}</div>
+        `;
+        a.appendChild(p); wrap.appendChild(a);
+      });
+    }
+    (async ()=>{
+      try{
+        const vids = await fetchYouTubeRSS(YT_RSS);
+        renderVideosHome(vids);
+      }catch(err){
+        console.error(err);
+        document.getElementById('videosHome').innerHTML='<div class="card"><div class="p muted">Gagal memuat video.</div></div>';
+      }
+    })();
   </script>
 </body>
 </html>
