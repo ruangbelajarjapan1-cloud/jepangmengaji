@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Live — Jepang Mengaji</title>
+  <meta name="description" content="Siaran langsung YouTube Jepang Mengaji."/>
+  <link rel="icon" href="jm.jpeg"/>
+  <style>
+    :root{--bg:#0f172a;--text:#e5e7eb;--border:#1f2937;--primary:#3b82f6}
+    body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;background:var(--bg);color:var(--text)}
+    .container{max-width:980px;margin:0 auto;padding:1.25rem}
+    header{display:flex;align-items:center;gap:.6rem;padding:1rem 0}
+    header img{height:32px;border-radius:.4rem}
+    .card{background:#111827;border:1px solid var(--border);border-radius:1rem;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+    .p{padding:1rem}
+    .aspect-video{position:relative;padding-top:56.25%;border-radius:1rem;overflow:hidden}
+    .aspect-video > *{position:absolute;inset:0;width:100%;height:100%}
+    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.6rem .9rem;border:1px solid var(--border);
+      border-radius:.7rem;background:#0b1220;color:var(--text);text-decoration:none}
+    .btn.primary{background:var(--primary);border-color:var(--primary);color:#fff}
+    .muted{color:#94a3b8}
+    footer{display:flex;justify-content:space-between;align-items:center;padding:1rem 0;color:#94a3b8}
+    nav{display:flex;gap:.6rem;flex-wrap:wrap}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <img src="jm.jpeg" alt="JM"/>
+      <strong>Jepang Mengaji</strong>
+      <span class="muted">/ Live</span>
+      <nav style="margin-left:auto">
+        <a class="btn" href="index.html">🏠 Home</a>
+        <a class="btn" href="arsip.html">🗂️ Arsip</a>
+        <a class="btn primary" href="https://www.youtube.com/@jepangmengaji1390" target="_blank" rel="noopener">▶️ YouTube</a>
+      </nav>
+    </header>
+
+    <section class="card">
+      <div class="p">
+        <h2 style="margin:.2rem 0 1rem">Live Jepang Mengaji</h2>
+        <div class="aspect-video" id="live"><div class="muted" style="display:grid;place-items:center">Memuat…</div></div>
+      </div>
+    </section>
+
+    <section style="margin-top:1rem" class="card">
+      <div class="p">
+        <h3 style="margin:.2rem 0 .6rem">Catatan</h3>
+        <p class="muted">Saat belum ada siaran, player akan menampilkan pesan bahwa live belum dimulai. Untuk jadwal, cek juga kanal YouTube.</p>
+      </div>
+    </section>
+
+    <footer>
+      <span>© <span id="y"></span> Jepang Mengaji</span>
+      <a class="muted" href="#top">Kembali ke atas</a>
+    </footer>
+  </div>
+
+  <script>
+    // Channel live embed
+    const CHANNEL_ID="UC3h0lpsfwETKD9v2mY6WVTQ";
+    const SRC=`https://www.youtube.com/embed/live_stream?channel=${CHANNEL_ID}`;
+    document.getElementById('live').innerHTML=
+      `<iframe src="${SRC}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
+    document.getElementById('y').textContent=new Date().getFullYear();
+  </script>
+</body>
+</html>
