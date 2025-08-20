@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Jepang Mengaji — Mengaji sesuai Sunnah, Dakwah, Berkontribusi di Jepang</title>
+  <title>Jepang Mengaji — Mengaji sesuai Sunnah, Berdakwah, Berkontribusi di Jepang</title>
   <meta name="description" content="Artikel keislaman, info kajian, live YouTube, dan donasi kegiatan dakwah di Jepang." />
   <link rel="icon" href="jm.jpeg" />
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -17,8 +17,7 @@
     html,body{height:100%}
     body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,"Noto Sans",sans-serif;color:var(--text);background:var(--bg)}
     body::before{content:""; position:fixed; inset:0; z-index:-1;
-      background:linear-gradient(rgba(255,255,255,0.86), rgba(255,255,255,0.86)), url("https://images.unsplash.com/photo-1523217582562-09d0def993a6?auto=format&fit=crop&w=1920&q=80") center/cover no-repeat;
-      will-change:transform}
+      background:linear-gradient(rgba(255,255,255,0.86), rgba(255,255,255,0.86)), url("https://images.unsplash.com/photo-1523217582562-09d0def993a6?auto=format&fit=crop&w=1920&q=80") center/cover no-repeat}
     [data-theme="dark"] body::before{background:linear-gradient(rgba(15,23,42,.80), rgba(15,23,42,.90)), url("https://images.unsplash.com/photo-1523217582562-09d0def993a6?auto=format&fit=crop&w=1920&q=80") center/cover no-repeat}
 
     a{text-decoration:none;color:inherit}
@@ -50,19 +49,19 @@
     .flex{display:flex;gap:.5rem;align-items:center}
     .right{margin-left:auto}
     .space{height:1rem}
-
     .logo{height:40px;border-radius:.5rem;background:#fff;box-shadow:var(--shadow)}
     [data-theme="dark"] .logo{background:#0b1220}
 
     .input{padding:.45rem .6rem;border:1px solid var(--border);border-radius:.6rem;background:var(--card);color:var(--text)}
     #backTop{position:fixed;bottom:20px;right:20px;z-index:50;width:44px;height:44px;border:none;border-radius:50%;background:var(--primary);color:#fff;cursor:pointer;box-shadow:var(--shadow);display:none;font-size:18px}
     #backTop:hover{transform:translateY(-2px)}
-    details{border:1px solid var(--border);border-radius:.6rem;background:var(--card);box-shadow:var(--shadow);overflow:hidden}
-    details summary{list-style:none;display:flex;align-items:center;gap:.5rem;padding:.6rem .8rem;cursor:pointer;font-weight:600;user-select:none}
-    details summary::-webkit-details-marker{display:none}
-    details .chev{margin-left:auto;transition:transform .2s}
-    details[open] .chev{transform:rotate(180deg)}
-    details .content{padding:.8rem .9rem}
+
+    /* kontak layout tweak */
+    .section.contact .container{align-items:start}
+    .section.contact .grid-2{gap:1rem}
+    .section.contact form .input{width:100%;box-sizing:border-box}
+    .section.contact form .actions{display:flex;gap:.5rem;flex-wrap:wrap}
+    @media(min-width:992px){.section.contact .grid-2{grid-template-columns:1.25fr .75fr}}
 
     .video-thumb{border-radius:.7rem;overflow:hidden;border:1px solid var(--border)}
   </style>
@@ -240,8 +239,8 @@
     </div>
   </section>
 
-  <!-- KONTAK -->
-  <section id="kontak" class="section">
+  <!-- KONTAK (rapi) -->
+  <section id="kontak" class="section contact">
     <div class="container grid grid-2">
       <div>
         <h2>Kontak Panitia</h2>
@@ -251,9 +250,9 @@
             <input class="input" placeholder="Nama" required/>
             <input class="input" type="email" placeholder="Email" required/>
           </div>
-          <input class="input" placeholder="Subjek (mis. Donasi Dauroh / Donasi Masjid / Info Kajian)" required/>
-          <textarea class="input" rows="4" placeholder="Pesan"></textarea>
-          <div class="flex" style="margin-top:.5rem;gap:.5rem">
+          <input class="input" placeholder="Subjek (mis. Donasi Dauroh / Donasi Masjid / Info Kajian)" required style="margin-top:.6rem"/>
+          <textarea class="input" rows="4" placeholder="Pesan" style="margin-top:.6rem"></textarea>
+          <div class="actions" style="margin-top:.6rem">
             <a class="btn" href="#donasi-dauroh">↗ Donasi Dauroh</a>
             <a class="btn" href="#donasi-masjid">↗ Donasi Masjid</a>
             <button class="btn primary" type="submit">Kirim</button>
@@ -264,8 +263,16 @@
       <aside class="card"><div class="p">
         <h3>Kontak Langsung & Konfirmasi</h3>
         <ul class="muted" style="margin-top:.2rem;line-height:1.9">
-          <li><strong>CP Donasi Dauroh — Akhi Tri Sambodo</strong> · <a href="https://wa.me/817084810427?text=Assalamu%27alaikum%2C%20saya%20ingin%20konfirmasi%20Donasi%20Dauroh.%0ANama%3A%20-%0ANominal%3A%20-%0ATanggal%3A%20-%0ATransfer%20ke%3A%20(SMBC%20%2F%20Yucho)" target="_blank" rel="noopener">WhatsApp</a> · <a href="tel:+817084810427">Telp</a></li>
-          <li><strong>CP Donasi Masjid — Akhi Tri Sambodo</strong> · <a href="https://wa.me/817084810427?text=Assalamu%27alaikum%2C%20saya%20ingin%20konfirmasi%20Donasi%20Masjid.%0ANama%3A%20-%0ANominal%3A%20-%0ATanggal%3A%20-%0ATransfer%20ke%3A%20(SMBC%20%2F%20Yucho)" target="_blank" rel="noopener">WhatsApp</a> · <a href="tel:+817084810427">Telp</a></li>
+          <li>
+            <strong>CP Donasi Dauroh — Akhi Tri Sambodo</strong><br/>
+            <a href="https://wa.me/817084810427?text=Assalamu%27alaikum%2C%20saya%20ingin%20konfirmasi%20Donasi%20Dauroh.%0ANama%3A%20-%0ANominal%3A%20-%0ATanggal%3A%20-%0ATransfer%20ke%3A%20(SMBC%20%2F%20Yucho)" target="_blank" rel="noopener">WhatsApp</a> ·
+            <a href="tel:+817084810427">Telp</a>
+          </li>
+          <li>
+            <strong>CP Donasi Masjid — Akhi Tri Sambodo</strong><br/>
+            <a href="https://wa.me/817084810427?text=Assalamu%27alaikum%2C%20saya%20ingin%20konfirmasi%20Donasi%20Masjid.%0ANama%3A%20-%0ANominal%3A%20-%0ATanggal%3A%20-%0ATransfer%20ke%3A%20(SMBC%20%2F%20Yucho)" target="_blank" rel="noopener">WhatsApp</a> ·
+            <a href="tel:+817084810427">Telp</a>
+          </li>
           <li>✉️ Email Panitia — <a href="mailto:panitia@jepangmengaji.org">panitia@jepangmengaji.org</a></li>
         </ul>
       </div></aside>
@@ -420,7 +427,7 @@
     }
     initData();
 
-    // ====== VIDEO TERBARU GRID (pakai rss2json juga) ======
+    // ====== VIDEO TERBARU GRID ======
     async function fetchYouTubeRSS(){
       const res = await fetch(RSS2JSON + encodeURIComponent(FEED) + `&_=${Date.now()}`);
       const data = await res.json();
