@@ -24,6 +24,7 @@
     .pill{padding:.15rem .5rem;border:1px solid var(--border);border-radius:999px;font-size:.75rem;color:var(--muted)}
     input[type="search"]{width:100%;padding:.7rem .9rem;border:1px solid var(--border);border-radius:.7rem;background:#0b1220;color:var(--text)}
     .video-thumb{border-radius:.7rem;overflow:hidden;border:1px solid var(--border)}
+    .center{display:flex;justify-content:center;align-items:center}
     footer{display:flex;justify-content:space-between;align-items:center;padding:1rem 0;color:var(--muted);flex-wrap:wrap;gap:.5rem}
   </style>
 </head>
@@ -39,7 +40,6 @@
       </nav>
     </header>
 
-    <!-- Tombol back -->
     <div style="margin:1rem 0">
       <a class="btn" href="index.html">⬅ Back to Home</a>
     </div>
@@ -60,6 +60,9 @@
       <div class="p">
         <h2 style="margin:.2rem 0 1rem">Video YouTube</h2>
         <div id="videoList" class="grid grid-3"></div>
+        <div class="center" style="margin-top:1rem">
+          <button id="loadMore" class="btn" style="display:none">Muat lagi</button>
+        </div>
       </div>
     </section>
 
@@ -77,127 +80,186 @@
     </footer>
   </div>
 
-  <!-- script sama seperti versi rss2json -->
-  <script>
-    const CHANNEL_ID = "UC3h0lpsfwETKD9v2mY6WVTQ";
-    const FEED = `https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`;
-    const RSS2JSON = "https://api.rss2json.com/v1/api.json?rss_url=";
-    const ARTICLES_CSV_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vQiIOueuc-YygpdulT9x9ZjJUA2jlaWXu2uGzwgHcugNebW5HLjR66luq3kHmqDvTmNJlSjpjsIQ6PG/pub?gid=0&single=true&output=csv";
+<script>
+  // ===== KONFIG =====
+  const CHANNEL_ID = "UC3h0lpsfwETKD9v2mY6WVTQ";
+  const FEED = `https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`;
+  const RSS2JSON = "https://api.rss2json.com/v1/api.json?rss_url=";
 
-    document.getElementById('y').textContent=new Date().getFullYear();
+  // >>> Isi untuk memuat SEMUA video (YouTube Data API v3), kosongkan jika tidak perlu
+  const YT_API_KEY = ""; // contoh: "AIzaSyDxxxx..."
+  const UPLOADS_PLAYLIST_ID = "UU" + CHANNEL_ID.slice(2);
 
-    const tabs=document.querySelectorAll('.tab');
-    const secVideos=document.getElementById('videos');
-    const secArticles=document.getElementById('articles');
-    tabs.forEach(t=>t.addEventListener('click',()=>{
-      tabs.forEach(x=>x.classList.remove('active'));
-      t.classList.add('active');
-      const isVideos = t.dataset.tab==='videos';
-      secVideos.style.display = isVideos?'block':'none';
-      secArticles.style.display = isVideos?'none':'block';
-      updateCount();
-    }));
+  const ARTICLES_CSV_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vQiIOueuc-YygpdulT9x9ZjJUA2jlaWXu2uGzwgHcugNebW5HLjR66luq3kHmqDvTmNJlSjpjsIQ6PG/pub?gid=0&single=true&output=csv";
 
-    async function fetchYouTube(){
-      const res = await fetch(RSS2JSON + encodeURIComponent(FEED) + `&_=${Date.now()}`);
-      const data = await res.json();
-      if(!data || !Array.isArray(data.items)) return [];
-      return data.items.map(it=>{
-        const id = (it.link.split("v=")[1]||"").slice(0,11);
-        return {
-          id,
-          title: it.title || "",
-          published: new Date(it.pubDate || Date.now()),
-          link: it.link || `https://www.youtube.com/watch?v=${id}`,
-          thumb: it.thumbnail || `https://i.ytimg.com/vi/${id}/hqdefault.jpg`,
-          desc: (it.description||"")
-        };
-      }).sort((a,b)=>b.published - a.published);
-    }
+  document.getElementById('y').textContent=new Date().getFullYear();
 
-    async function fetchCSV(url){
-      const res=await fetch(url+(url.includes('?')?'&':'?')+'_='+Date.now());
-      const text=(await res.text()).replace(/^\uFEFF/,'');
-      const rows=[];let row=[],cell='',inQuotes=false;
-      for(let i=0;i<text.length;i++){
-        const c=text[i],n=text[i+1];
-        if(c=='"'){ if(inQuotes&&n=='"'){cell+='"';i++;} else inQuotes=!inQuotes; }
-        else if(c===','&&!inQuotes){row.push(cell);cell='';}
-        else if((c==='\n'||(c==='\r'&&n==='\n'))&&!inQuotes){ if(c==='\r') i++; row.push(cell); cell=''; if(row.length) rows.push(row); row=[]; }
-        else { cell+=c; }
-      }
-      if(cell||row.length){row.push(cell);rows.push(row)}
-      const header=(rows.shift()||[]).map(h=>h.trim());
-      return rows.map(r=>Object.fromEntries(header.map((h,i)=>[h,(r[i]||'').trim()])));
-    }
+  // ===== Tabs =====
+  const tabs=document.querySelectorAll('.tab');
+  const secVideos=document.getElementById('videos');
+  const secArticles=document.getElementById('articles');
+  tabs.forEach(t=>t.addEventListener('click',()=>{
+    tabs.forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    const isVideos = t.dataset.tab==='videos';
+    secVideos.style.display = isVideos?'block':'none';
+    secArticles.style.display = isVideos?'none':'block';
+    updateCount();
+  }));
 
-    let allVideos=[], allArticles=[];
-    function fmtDate(d){ return d ? d.toLocaleDateString('id-ID',{year:'numeric',month:'short',day:'numeric'}) : '' }
+  // ===== Util & Render =====
+  let allVideos=[], allArticles=[];
+  let ytNextPageToken=null;
 
-    function renderVideos(list){
-      const wrap=document.getElementById('videoList'); wrap.innerHTML='';
-      if(!list.length){wrap.innerHTML='<div class="muted">Belum ada video.</div>'; return}
-      list.forEach(v=>{
-        const a=document.createElement('a'); a.className='card'; a.href=v.link; a.target='_blank'; a.rel='noopener';
-        const p=document.createElement('div'); p.className='p';
-        p.innerHTML = `
-          <div class="video-thumb"><img src="${v.thumb}" alt=""></div>
-          <h3 style="margin:.6rem 0 .3rem">${v.title}</h3>
-          <div class="muted">${fmtDate(v.published)}</div>
-        `;
-        a.appendChild(p); wrap.appendChild(a);
-      });
-    }
-    function renderArticles(list){
-      const wrap=document.getElementById('articleList'); wrap.innerHTML='';
-      if(!list.length){wrap.innerHTML='<div class="muted">Belum ada artikel.</div>'; return}
-      list.forEach(a=>{
-        const card=document.createElement('article'); card.className='card';
-        const p=document.createElement('div'); p.className='p';
-        const h3=document.createElement('h3'); h3.textContent=a.title||''; p.appendChild(h3);
-        const ex=document.createElement('p'); ex.className='muted'; ex.textContent=a.excerpt||''; p.appendChild(ex);
-        const dt=document.createElement('div'); dt.className='muted'; dt.textContent=a.date?fmtDate(new Date(a.date)) : ''; p.appendChild(dt);
-        const link=document.createElement('a'); link.className='btn'; link.href=a.href||'#'; link.textContent='Baca';
-        if(/^https?:/i.test(link.href)){link.target='_blank';link.rel='noopener'}
-        p.appendChild(link); card.appendChild(p); wrap.appendChild(card);
-      });
-    }
-    function updateCount(){
-      const activeTab = document.querySelector('.tab.active')?.dataset.tab || 'videos';
-      const n = activeTab==='videos' ? document.querySelectorAll('#videoList > *').length
-                                     : document.querySelectorAll('#articleList > *').length;
-      document.getElementById('countInfo').textContent = `${n} item`;
-    }
-
-    document.getElementById('q').addEventListener('input', e=>{
-      const q=e.target.value.toLowerCase();
-      const vFiltered = allVideos.filter(v => (v.title+' '+v.desc).toLowerCase().includes(q));
-      const aFiltered = allArticles.filter(a => (a.title+' '+(a.excerpt||'')).toLowerCase().includes(q));
-      renderVideos(vFiltered); renderArticles(aFiltered); updateCount();
+  function fmtDate(d){ return d ? d.toLocaleDateString('id-ID',{year:'numeric',month:'short',day:'numeric'}) : '' }
+  function updateCount(){
+    const activeTab = document.querySelector('.tab.active')?.dataset.tab || 'videos';
+    const n = activeTab==='videos' ? document.querySelectorAll('#videoList > *').length
+                                   : document.querySelectorAll('#articleList > *').length;
+    document.getElementById('countInfo').textContent = `${n} item`;
+  }
+  function renderVideosAppend(list){
+    const wrap=document.getElementById('videoList');
+    list.forEach(v=>{
+      const a=document.createElement('a'); a.className='card'; a.href=v.link; a.target='_blank'; a.rel='noopener';
+      const p=document.createElement('div'); p.className='p';
+      p.innerHTML = `
+        <div class="video-thumb"><img src="${v.thumb}" alt=""></div>
+        <h3 style="margin:.6rem 0 .3rem">${v.title}</h3>
+        <div class="muted">${fmtDate(v.published)}</div>`;
+      a.appendChild(p); wrap.appendChild(a);
     });
+  }
+  function resetVideosUI(){ document.getElementById('videoList').innerHTML=''; }
 
-    (async ()=>{
-      try{
-        [allVideos, allArticles] = await Promise.all([
-          fetchYouTube(),
-          fetchCSV(ARTICLES_CSV_URL)
-        ]);
-        renderVideos(allVideos);
-        renderArticles(allArticles);
-        updateCount();
-        const params=new URLSearchParams(location.search);
-        const initQ=params.get('q')||'';
-        if(initQ){
-          const box=document.getElementById('q');
-          box.value=initQ;
-          box.dispatchEvent(new Event('input'));
-        }
-      }catch(err){
-        console.error(err);
-        document.getElementById('videoList').innerHTML='<div class="muted">Gagal memuat video.</div>';
-        document.getElementById('articleList').innerHTML='<div class="muted">Gagal memuat artikel.</div>';
-      }
-    })();
-  </script>
+  // ===== Sumber 1: rss2json (langsung) =====
+  async function fetchViaRSS2JSON(){
+    const res = await fetch(RSS2JSON + encodeURIComponent(FEED) + `&count=50&_=${Date.now()}`);
+    const data = await res.json();
+    if(!data || !Array.isArray(data.items)) return [];
+    return data.items.map(it=>{
+      const id = (it.link.split("v=")[1]||"").slice(0,11);
+      return {
+        id,
+        title: it.title || "",
+        published: new Date(it.pubDate || Date.now()),
+        link: it.link || `https://www.youtube.com/watch?v=${id}`,
+        thumb: it.thumbnail || `https://i.ytimg.com/vi/${id}/hqdefault.jpg`,
+        desc: (it.description||"")
+      };
+    }).sort((a,b)=>b.published - a.published);
+  }
+
+  // ===== Sumber 2: YouTube Data API (SEMUA video) =====
+  async function fetchUploadsPage(pageToken=null){
+    const url = new URL("https://www.googleapis.com/youtube/v3/playlistItems");
+    url.searchParams.set("part","snippet,contentDetails");
+    url.searchParams.set("playlistId",UPLOADS_PLAYLIST_ID);
+    url.searchParams.set("maxResults","24");
+    url.searchParams.set("key",YT_API_KEY);
+    if(pageToken) url.searchParams.set("pageToken",pageToken);
+
+    const res = await fetch(url.toString());
+    const json = await res.json();
+    ytNextPageToken = json.nextPageToken || null;
+
+    const items = (json.items||[]).map(it=>{
+      const id = (it.contentDetails && it.contentDetails.videoId) || "";
+      return {
+        id,
+        title: it.snippet?.title || "",
+        published: new Date(it.contentDetails?.videoPublishedAt || it.snippet?.publishedAt || Date.now()),
+        link: `https://www.youtube.com/watch?v=${id}`,
+        thumb: `https://i.ytimg.com/vi/${id}/hqdefault.jpg`,
+        desc: it.snippet?.description || ""
+      };
+    });
+    return items;
+  }
+
+  async function initVideos(){
+    resetVideosUI();
+    if (YT_API_KEY){
+      // mode “semua video”
+      const first = await fetchUploadsPage(null);
+      allVideos = first.slice().sort((a,b)=>b.published-a.published);
+      renderVideosAppend(allVideos);
+      document.getElementById('loadMore').style.display = ytNextPageToken ? 'inline-flex':'none';
+      updateCount();
+    }else{
+      // fallback RSS (tanpa API key)
+      allVideos = await fetchViaRSS2JSON();
+      renderVideosAppend(allVideos);
+      document.getElementById('loadMore').style.display='none';
+      updateCount();
+    }
+  }
+
+  document.getElementById('loadMore').addEventListener('click', async ()=>{
+    if(!YT_API_KEY || !ytNextPageToken) return;
+    const more = await fetchUploadsPage(ytNextPageToken);
+    allVideos = allVideos.concat(more).sort((a,b)=>b.published-a.published);
+    renderVideosAppend(more);
+    document.getElementById('loadMore').style.display = ytNextPageToken ? 'inline-flex':'none';
+    updateCount();
+  });
+
+  // ===== Artikel (CSV) =====
+  async function fetchCSV(url){
+    const res=await fetch(url+(url.includes('?')?'&':'?')+'_='+Date.now());
+    const text=(await res.text()).replace(/^\uFEFF/,'');
+    const rows=[];let row=[],cell='',inQuotes=false;
+    for(let i=0;i<text.length;i++){
+      const c=text[i],n=text[i+1];
+      if(c=='"'){ if(inQuotes&&n=='"'){cell+='"';i++;} else inQuotes=!inQuotes; }
+      else if(c===','&&!inQuotes){row.push(cell);cell='';}
+      else if((c==='\n'||(c==='\r'&&n==='\n'))&&!inQuotes){ if(c==='\r') i++; row.push(cell); cell=''; if(row.length) rows.push(row); row=[]; }
+      else { cell+=c; }
+    }
+    if(cell||row.length){row.push(cell);rows.push(row)}
+    const header=(rows.shift()||[]).map(h=>h.trim());
+    return rows.map(r=>Object.fromEntries(header.map((h,i)=>[h,(r[i]||'').trim()])));
+  }
+  function renderArticles(list){
+    const wrap=document.getElementById('articleList'); wrap.innerHTML='';
+    if(!list.length){wrap.innerHTML='<div class="muted">Belum ada artikel.</div>';return}
+    list.forEach(a=>{
+      const card=document.createElement('article'); card.className='card';
+      const p=document.createElement('div'); p.className='p';
+      p.innerHTML = `<h3>${a.title||''}</h3>
+        <p class="muted">${a.excerpt||''}</p>
+        <div class="muted">${a.date?fmtDate(new Date(a.date)):''}</div>
+        <a class="btn" href="${a.href||'#'}" target="_blank" rel="noopener">Baca</a>`;
+      card.appendChild(p); wrap.appendChild(card);
+    });
+  }
+
+  // ===== Search =====
+  document.getElementById('q').addEventListener('input', e=>{
+    const q=e.target.value.toLowerCase();
+    const vFiltered = allVideos.filter(v => (v.title+' '+v.desc).toLowerCase().includes(q));
+    const aFiltered = allArticles.filter(a => (a.title+' '+(a.excerpt||'')).toLowerCase().includes(q));
+    document.getElementById('videoList').innerHTML='';
+    renderVideosAppend(vFiltered);
+    renderArticles(aFiltered);
+    updateCount();
+  });
+
+  // ===== Init =====
+  (async ()=>{
+    try{
+      [allArticles] = await Promise.all([ fetchCSV(ARTICLES_CSV_URL) ]);
+      renderArticles(allArticles);
+      await initVideos();
+      const params=new URLSearchParams(location.search);
+      const initQ=params.get('q')||'';
+      if(initQ){ const box=document.getElementById('q'); box.value=initQ; box.dispatchEvent(new Event('input')); }
+    }catch(err){
+      console.error(err);
+      document.getElementById('videoList').innerHTML='<div class="muted">Gagal memuat video.</div>';
+      document.getElementById('articleList').innerHTML='<div class="muted">Gagal memuat artikel.</div>';
+    }
+  })();
+</script>
 </body>
 </html>
