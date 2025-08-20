@@ -63,6 +63,7 @@
         <div class="center" style="margin-top:1rem">
           <button id="loadMore" class="btn" style="display:none">Muat lagi</button>
         </div>
+        <div id="videoError" class="muted" style="margin-top:.75rem;display:none"></div>
       </div>
     </section>
 
@@ -83,11 +84,10 @@
 <script>
   // ===== KONFIG =====
   const CHANNEL_ID = "UC3h0lpsfwETKD9v2mY6WVTQ";
-  const FEED = `https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`;
-  const RSS2JSON = "https://api.rss2json.com/v1/api.json?rss_url=";
+  const FEED_URL = `https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`;
 
-  // >>> Isi untuk memuat SEMUA video (YouTube Data API v3), kosongkan jika tidak perlu
-  const YT_API_KEY = ""; // contoh: "AIzaSyDxxxx..."
+  // >>> MODE “SEMUA VIDEO” AKTIF (API key kamu)
+  const YT_API_KEY = "AIzaSyD4Uvf7iCGGuaoAbUeHhxTJcV6GuyRKw-k";
   const UPLOADS_PLAYLIST_ID = "UU" + CHANNEL_ID.slice(2);
 
   const ARTICLES_CSV_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vQiIOueuc-YygpdulT9x9ZjJUA2jlaWXu2uGzwgHcugNebW5HLjR66luq3kHmqDvTmNJlSjpjsIQ6PG/pub?gid=0&single=true&output=csv";
@@ -118,6 +118,11 @@
                                    : document.querySelectorAll('#articleList > *').length;
     document.getElementById('countInfo').textContent = `${n} item`;
   }
+  function showVideoError(msg){
+    const el=document.getElementById('videoError');
+    el.textContent = msg;
+    el.style.display = 'block';
+  }
   function renderVideosAppend(list){
     const wrap=document.getElementById('videoList');
     list.forEach(v=>{
@@ -130,36 +135,19 @@
       a.appendChild(p); wrap.appendChild(a);
     });
   }
-  function resetVideosUI(){ document.getElementById('videoList').innerHTML=''; }
+  function resetVideosUI(){ document.getElementById('videoList').innerHTML=''; document.getElementById('videoError').style.display='none'; }
 
-  // ===== Sumber 1: rss2json (langsung) =====
-  async function fetchViaRSS2JSON(){
-    const res = await fetch(RSS2JSON + encodeURIComponent(FEED) + `&count=50&_=${Date.now()}`);
-    const data = await res.json();
-    if(!data || !Array.isArray(data.items)) return [];
-    return data.items.map(it=>{
-      const id = (it.link.split("v=")[1]||"").slice(0,11);
-      return {
-        id,
-        title: it.title || "",
-        published: new Date(it.pubDate || Date.now()),
-        link: it.link || `https://www.youtube.com/watch?v=${id}`,
-        thumb: it.thumbnail || `https://i.ytimg.com/vi/${id}/hqdefault.jpg`,
-        desc: (it.description||"")
-      };
-    }).sort((a,b)=>b.published - a.published);
-  }
-
-  // ===== Sumber 2: YouTube Data API (SEMUA video) =====
+  // ====== MODE API (SEMUA VIDEO) ======
   async function fetchUploadsPage(pageToken=null){
     const url = new URL("https://www.googleapis.com/youtube/v3/playlistItems");
     url.searchParams.set("part","snippet,contentDetails");
     url.searchParams.set("playlistId",UPLOADS_PLAYLIST_ID);
-    url.searchParams.set("maxResults","24");
+    url.searchParams.set("maxResults","24"); // bisa 50
     url.searchParams.set("key",YT_API_KEY);
     if(pageToken) url.searchParams.set("pageToken",pageToken);
 
     const res = await fetch(url.toString());
+    if(!res.ok){ throw new Error('YouTube API error '+res.status); }
     const json = await res.json();
     ytNextPageToken = json.nextPageToken || null;
 
@@ -177,31 +165,70 @@
     return items;
   }
 
+  // ====== MODE TANPA API (fallback RSS) ======
+  async function fetchFeedNoKey(){
+    const candidates = [
+      FEED_URL,
+      `https://api.allorigins.win/raw?url=${encodeURIComponent(FEED_URL)}`,
+      `https://cors.isomorphic-git.org/${FEED_URL}`
+    ];
+    for(const u of candidates){
+      try{
+        const res = await fetch(u, {headers:{'Accept':'application/xml,text/xml,application/xhtml+xml;q=0.9,*/*;q=0.8'}});
+        const txt = await res.text();
+        const doc = new DOMParser().parseFromString(txt, "text/xml");
+        const entries = Array.from(doc.getElementsByTagName('entry'));
+        if(entries.length){
+          const list = entries.map(e=>{
+            const link = (e.getElementsByTagName('link')[0]?.getAttribute('href')) || '';
+            const id   = (link.split('v=')[1]||'').slice(0,11);
+            const title= e.getElementsByTagName('title')[0]?.textContent || '';
+            const published = new Date(e.getElementsByTagName('published')[0]?.textContent || Date.now());
+            return { id, title, published, link: link || `https://www.youtube.com/watch?v=${id}`, thumb:`https://i.ytimg.com/vi/${id}/hqdefault.jpg`, desc:'' };
+          }).sort((a,b)=>b.published-a.published);
+          return list;
+        }
+      }catch(err){
+        console.warn('Feed gagal:', u, err);
+      }
+    }
+    return [];
+  }
+
   async function initVideos(){
     resetVideosUI();
-    if (YT_API_KEY){
-      // mode “semua video”
-      const first = await fetchUploadsPage(null);
-      allVideos = first.slice().sort((a,b)=>b.published-a.published);
-      renderVideosAppend(allVideos);
-      document.getElementById('loadMore').style.display = ytNextPageToken ? 'inline-flex':'none';
+    try{
+      if (YT_API_KEY){
+        const first = await fetchUploadsPage(null);
+        allVideos = first.slice().sort((a,b)=>b.published-a.published);
+        renderVideosAppend(allVideos);
+        document.getElementById('loadMore').style.display = ytNextPageToken ? 'inline-flex':'none';
+        if(!allVideos.length) showVideoError('Tidak ada video dari API.');
+      }else{
+        allVideos = await fetchFeedNoKey();
+        renderVideosAppend(allVideos);
+        document.getElementById('loadMore').style.display='none';
+        if(!allVideos.length) showVideoError('Gagal memuat video. Coba refresh atau isi API key.');
+      }
       updateCount();
-    }else{
-      // fallback RSS (tanpa API key)
-      allVideos = await fetchViaRSS2JSON();
-      renderVideosAppend(allVideos);
-      document.getElementById('loadMore').style.display='none';
-      updateCount();
+    }catch(e){
+      console.error(e);
+      showVideoError('Terjadi kesalahan saat memuat video.');
     }
   }
 
   document.getElementById('loadMore').addEventListener('click', async ()=>{
     if(!YT_API_KEY || !ytNextPageToken) return;
-    const more = await fetchUploadsPage(ytNextPageToken);
-    allVideos = allVideos.concat(more).sort((a,b)=>b.published-a.published);
-    renderVideosAppend(more);
-    document.getElementById('loadMore').style.display = ytNextPageToken ? 'inline-flex':'none';
-    updateCount();
+    try{
+      const more = await fetchUploadsPage(ytNextPageToken);
+      allVideos = allVideos.concat(more).sort((a,b)=>b.published-a.published);
+      renderVideosAppend(more);
+      document.getElementById('loadMore').style.display = ytNextPageToken ? 'inline-flex':'none';
+      updateCount();
+    }catch(e){
+      console.error(e);
+      showVideoError('Gagal memuat halaman berikutnya.');
+    }
   });
 
   // ===== Artikel (CSV) =====
@@ -256,8 +283,7 @@
       if(initQ){ const box=document.getElementById('q'); box.value=initQ; box.dispatchEvent(new Event('input')); }
     }catch(err){
       console.error(err);
-      document.getElementById('videoList').innerHTML='<div class="muted">Gagal memuat video.</div>';
-      document.getElementById('articleList').innerHTML='<div class="muted">Gagal memuat artikel.</div>';
+      showVideoError('Gagal memuat data.');
     }
   })();
 </script>
