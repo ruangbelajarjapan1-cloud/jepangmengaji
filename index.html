@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Jepang Mengaji — Mengaji sesuai Sunnah, Dakwah, Berkontribusi di Jepang</title>
+  <title>Jepang Mengaji — Mengaji sesuai Sunnah, Berdakwah, Berkontribusi</title>
   <meta name="description" content="Artikel keislaman, info kajian, live YouTube, dan donasi kegiatan dakwah di Jepang." />
   <link rel="icon" href="jm.jpeg" />
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -28,12 +28,34 @@
     .btn:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
     .btn.primary{background:var(--primary);color:#fff;border-color:var(--primary)}
     .btn.soft{background:transparent;color:var(--primary);border-color:var(--primary)}
-    .badge{padding:.1rem .4rem;font-size:.75rem;background:rgba(148,163,184,.25);border:1px solid var(--border);border-radius:.4rem}
+    .badge{padding:.1rem .4rem;font-size:.75rem;background:rgba(148,163,184,.25);border:1px solid var(--border);border-radius:.4rem;white-space:nowrap}
 
+    /* ===== NAVBAR RAPIH ===== */
     .nav{position:sticky;top:0;z-index:40;background:color-mix(in oklab,var(--bg) 85%, transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
-    .nav-inner{display:flex;justify-content:space-between;align-items:center;padding:.7rem 0}
-    .nav-links{display:none;gap:1rem}
-    @media(min-width:768px){.nav-links{display:flex}}
+    .nav-inner{display:flex;gap:1rem;align-items:center;padding:.65rem 0}
+    .brand{display:flex;align-items:center;gap:.6rem;min-width:0}
+    .brand .logo{height:40px;border-radius:.5rem;background:#fff;box-shadow:var(--shadow)}
+    [data-theme="dark"] .brand .logo{background:#0b1220}
+
+    .nav-center{flex:1;display:flex;justify-content:center}
+    .nav-links{display:flex;align-items:center;gap:1rem;flex-wrap:nowrap;overflow:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+    .nav-links::-webkit-scrollbar{display:none}
+    .nav-links a{padding:.35rem .4rem;border-radius:.5rem;white-space:nowrap;border:1px solid transparent}
+    .nav-links a:hover{background:color-mix(in oklab,var(--bg-soft) 60%, transparent);border-color:var(--border)}
+
+    .nav-right{display:flex;align-items:center;gap:.5rem}
+    .nav-search{display:none}
+    .nav-toggle{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border:1px solid var(--border);border-radius:.6rem;background:var(--card);cursor:pointer}
+    @media(min-width:900px){
+      .nav-center{justify-content:flex-start}
+      .nav-search{display:block}
+      .nav-toggle{display:none}
+    }
+    /* mobile drawer */
+    #drawer{display:none}
+    #drawer.open{display:block;position:fixed;inset:64px 0 auto 0;background:var(--card);border-bottom:1px solid var(--border);box-shadow:var(--shadow);z-index:30}
+    #drawer .menu{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;padding:.7rem 1rem}
+    #drawer a{padding:.6rem .8rem;border:1px solid var(--border);border-radius:.6rem;text-align:center}
 
     .hero{padding:3rem 0;background:linear-gradient(180deg,color-mix(in oklab,var(--primary) 10%,transparent),transparent)}
     .grid{display:grid;gap:1rem}
@@ -42,21 +64,18 @@
     @media(min-width:768px){.grid-2{grid-template-columns:1fr 1fr}.grid-3{grid-template-columns:repeat(3,1fr)}}
     .card{background:var(--card);border:1px solid var(--border);border-radius:1rem;box-shadow:var(--shadow)}
     .card>.p{padding:1rem}
-    .section{padding:2.5rem 0}
+    .section{padding:2.2rem 0}
     .muted{color:var(--muted)}
     .aspect-video{position:relative;padding-top:56.25%;background:var(--bg-soft);border:1px solid var(--border);border-radius:1rem;overflow:hidden}
     .aspect-video>*{position:absolute;inset:0;width:100%;height:100%}
     .flex{display:flex;gap:.5rem;align-items:center}
     .right{margin-left:auto}
     .space{height:1rem}
-    .logo{height:40px;border-radius:.5rem;background:#fff;box-shadow:var(--shadow)}
-    [data-theme="dark"] .logo{background:#0b1220}
-
     .input{padding:.45rem .6rem;border:1px solid var(--border);border-radius:.6rem;background:var(--card);color:var(--text)}
     #backTop{position:fixed;bottom:20px;right:20px;z-index:50;width:44px;height:44px;border:none;border-radius:50%;background:var(--primary);color:#fff;cursor:pointer;box-shadow:var(--shadow);display:none;font-size:18px}
     #backTop:hover{transform:translateY(-2px)}
 
-    /* kontak layout tweak */
+    /* kontak layout */
     .section.contact .container{align-items:start}
     .section.contact .grid-2{gap:1rem}
     .section.contact form .input{width:100%;box-sizing:border-box}
@@ -70,26 +89,53 @@
   <!-- NAVBAR -->
   <header class="nav">
     <div class="container nav-inner">
-      <div class="flex" style="gap:.7rem">
+      <button class="nav-toggle" id="navToggle" aria-label="Menu">☰</button>
+
+      <div class="brand">
         <img src="jm.jpeg" alt="Logo" class="logo" />
-        <a href="#top" style="font-size:1.2rem;font-weight:700">Jepang Mengaji</a>
-        <span class="badge">コミュニティ</span>
+        <div style="display:flex;flex-direction:column;line-height:1.1">
+          <a href="#top" style="font-size:1.05rem;font-weight:700">Jepang Mengaji</a>
+          <span class="badge">コミュニティ</span>
+        </div>
       </div>
-      <nav class="nav-links">
+
+      <div class="nav-center">
+        <nav class="nav-links" aria-label="Navigasi utama">
+          <a href="#artikel">Artikel</a>
+          <a href="#kajian">Info Kajian</a>
+          <a href="#live">Live</a>
+          <a href="live.html">Halaman Live</a>
+          <a href="arsip.html">Arsip</a>
+          <a href="#donasi">Donasi</a>
+          <a href="#tentang">Tentang</a>
+          <a href="#kontak">Kontak</a>
+        </nav>
+      </div>
+
+      <div class="nav-right">
+        <form id="navSearch" class="nav-search" onsubmit="event.preventDefault();var q=this.q.value.trim();location.href='arsip.html'+(q?('?q='+encodeURIComponent(q)):'');">
+          <input name="q" type="search" placeholder="Cari… (mis. akidah)" class="input" style="width:180px"/>
+        </form>
+        <button class="btn soft" id="themeToggle" aria-label="Toggle theme">🌗</button>
+        <a class="btn primary" href="#donasi">❤️ Donasi</a>
+      </div>
+    </div>
+
+    <!-- drawer mobile -->
+    <div id="drawer">
+      <div class="menu">
         <a href="#artikel">Artikel</a>
         <a href="#kajian">Info Kajian</a>
         <a href="#live">Live</a>
-        <a href="live.html">🔴 Halaman Live</a>
-        <a href="arsip.html">🗂️ Arsip</a>
+        <a href="live.html">Halaman Live</a>
+        <a href="arsip.html">Arsip</a>
         <a href="#donasi">Donasi</a>
         <a href="#tentang">Tentang</a>
         <a href="#kontak">Kontak</a>
-      </nav>
-      <div class="flex">
-        <button class="btn soft" id="themeToggle" aria-label="Toggle theme">🌗</button>
-        <a class="btn primary" href="#donasi">❤️ Donasi</a>
-        <form id="navSearch" style="margin-left:.5rem" onsubmit="event.preventDefault();var q=this.q.value.trim();location.href='arsip.html'+(q?('?q='+encodeURIComponent(q)):'');">
-          <input name="q" type="search" placeholder="Cari… (mis. akidah)" class="input" style="width:180px"/>
+      </div>
+      <div style="padding:.5rem 1rem;border-top:1px solid var(--border)">
+        <form onsubmit="event.preventDefault();var q=this.q.value.trim();location.href='arsip.html'+(q?('?q='+encodeURIComponent(q)):'');">
+          <input name="q" type="search" placeholder="Cari… (mis. akidah)" class="input" style="width:100%"/>
         </form>
       </div>
     </div>
@@ -99,7 +145,7 @@
   <section class="hero">
     <div class="container grid grid-2" style="align-items:center;gap:1.5rem">
       <div>
-        <h1>Mengaji sesuai Sunnah, <span style="color:var(--primary)">Dakwah</span>, Berkontribusi di Jepang</h1>
+        <h1>Mengaji sesuai Sunnah, <span style="color:var(--primary)">Berdakwah</span>, Berkontribusi</h1>
         <p class="muted">Artikel, info kajian sunnah, live YouTube, dan donasi kegiatan dakwah di Jepang.</p>
         <div class="flex" style="flex-wrap:wrap;gap:.5rem">
           <a class="btn primary" href="#kajian">📅 Lihat Kajian</a>
@@ -127,7 +173,7 @@
     <div class="container"><h2>Info Kajian</h2><div id="kajians" class="grid grid-3"></div></div>
   </section>
 
-  <!-- LIVE (preview) -->
+  <!-- LIVE PREVIEW -->
   <section id="live" class="section">
     <div class="container grid grid-2">
       <div class="card"><div class="p"><h3>Player</h3><div class="aspect-video" id="livePlayer2"><div class="center muted">Memuat…</div></div></div></div>
@@ -174,7 +220,7 @@
 
         <article class="card" id="donasi-masjid"><div class="p">
           <h3>❤️ Donasi Masjid</h3>
-          <p class="muted">Untuk renovasi/operasional,pembelian bangunan masjid & musholla.</p>
+          <p class="muted">Untuk renovasi/operasional, pembelian bangunan masjid & musholla.</p>
           <h4>Nomor Rekening</h4>
           <ul class="muted" style="margin-top:.2rem;line-height:1.7">
             <li><strong>SMBC Indonesia / Jenius</strong> a.n. <em>Wahyu Setiawan</em> — <strong>90220139952</strong></li>
@@ -202,7 +248,7 @@
     </div>
   </section>
 
-  <!-- TENTANG & GABUNG KOMUNITAS -->
+  <!-- TENTANG -->
   <section id="tentang" class="section" style="background:var(--bg-soft)">
     <div class="container grid grid-2">
       <div>
@@ -218,7 +264,7 @@
       <div class="card"><div class="p">
         <h3>Gabung Komunitas</h3>
         <div class="flex" style="flex-wrap:wrap;gap:.5rem;margin:.5rem 0 1rem">
-          <a class="btn primary" href="https://t.me/jepangmengaji" target="_blank" rel="noopener">📲 Whatsapp Group</a>
+          <a class="btn primary" href="https://chat.whatsapp.com/Fg2UKlhT5s9B7oYeTsMMKO?mode=ac_t" target="_blank" rel="noopener">📲 Whatsapp Group</a>
           <a class="btn" href="https://t.me/jepangmengaji_channel" target="_blank" rel="noopener">📣 Telegram Channel</a>
           <a class="btn" href="https://www.youtube.com/@jepangmengaji1390" target="_blank" rel="noopener">▶️ YouTube</a>
           <a class="btn" href="https://www.instagram.com/jepangmengaji/?hl=en" target="_blank" rel="noopener">📷 Instagram</a>
@@ -234,12 +280,11 @@
             </ul>
           </div>
         </details>
-
       </div></div>
     </div>
   </section>
 
-  <!-- KONTAK (rapi) -->
+  <!-- KONTAK -->
   <section id="kontak" class="section contact">
     <div class="container grid grid-2">
       <div>
@@ -296,11 +341,19 @@
   <button id="backTop" title="Kembali ke atas">⬆</button>
 
   <script>
-    // ====== DATA SHEETS ======
+    /* ====== NAV drawer ====== */
+    const navToggle=document.getElementById('navToggle');
+    const drawer=document.getElementById('drawer');
+    if(navToggle){ navToggle.addEventListener('click',()=>{ drawer.classList.toggle('open'); }); }
+    document.addEventListener('click',e=>{
+      if(drawer.classList.contains('open') && !e.target.closest('#drawer') && !e.target.closest('#navToggle')) drawer.classList.remove('open');
+    });
+
+    /* ====== DATA SHEETS ====== */
     const ARTICLES_CSV_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vQiIOueuc-YygpdulT9x9ZjJUA2jlaWXu2uGzwgHcugNebW5HLjR66luq3kHmqDvTmNJlSjpjsIQ6PG/pub?gid=0&single=true&output=csv";
     const KAJIAN_CSV_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vQiIOueuc-YygpdulT9x9ZjJUA2jlaWXu2uGzwgHcugNebW5HLjR66luq3kHmqDvTmNJlSjpjsIQ6PG/pub?gid=450885199&single=true&output=csv";
 
-    // ====== YOUTUBE CONFIG ======
+    /* ====== YOUTUBE CONFIG ====== */
     const CHANNEL_ID = "UC3h0lpsfwETKD9v2mY6WVTQ";
     const CHANNEL_LIVE_EMBED = `https://www.youtube.com/embed/live_stream?channel=${CHANNEL_ID}`;
     const FEED = `https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`;
@@ -312,9 +365,8 @@
       document.documentElement.setAttribute('data-theme',cur);
       localStorage.setItem('jm-theme',cur);
     });
-    // year
+    // year & back-to-top
     document.getElementById('year').textContent=new Date().getFullYear();
-    // back to top
     const backBtn=document.getElementById('backTop');
     window.addEventListener('scroll',()=>{backBtn.style.display=window.scrollY>300?'block':'none'});
     backBtn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
@@ -332,7 +384,7 @@
     }
     function mountByVideoId(id,vid){ mountIframeBySrc(id, vid ? `https://www.youtube.com/embed/${vid}` : ""); }
 
-    // === Ambil ID video terbaru dari channel
+    // Ambil ID video terbaru (RSS→rss2json)
     async function fetchLatestVideoId(){
       const res = await fetch(RSS2JSON + encodeURIComponent(FEED) + `&_=${Date.now()}`);
       const data = await res.json();
@@ -351,12 +403,10 @@
           return;
         }
       }catch(e){ console.warn('Gagal ambil video terbaru:', e); }
-      // fallback → live
+      // fallback live
       mountIframeBySrc('livePlayer', CHANNEL_LIVE_EMBED);
       mountIframeBySrc('livePlayer2', CHANNEL_LIVE_EMBED);
     }
-
-    // default: tampilkan video terbaru
     mountLatestVideo();
 
     // input manual override
@@ -376,7 +426,7 @@
       });
     }
 
-    // ===== CSV helpers =====
+    // CSV helpers
     async function fetchCSV(url){
       const res=await fetch(url+(url.includes('?')?'&':'?')+'_='+Date.now());
       const text=(await res.text()).replace(/^\uFEFF/,'');
@@ -427,7 +477,7 @@
     }
     initData();
 
-    // ====== VIDEO TERBARU GRID ======
+    // VIDEO TERBARU GRID
     async function fetchYouTubeRSS(){
       const res = await fetch(RSS2JSON + encodeURIComponent(FEED) + `&_=${Date.now()}`);
       const data = await res.json();
