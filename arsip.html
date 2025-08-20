@@ -6,161 +6,198 @@
   <title>Arsip — Jepang Mengaji</title>
   <link rel="icon" href="jm.jpeg"/>
   <style>
-    body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif}
-    [data-theme="light"]{--bg:#fff;--card:#fff;--border:#e2e8f0;--text:#0f172a;--muted:#475569;--primary:#3b82f6}
-    [data-theme="dark"]{--bg:#0f172a;--card:#111827;--border:#1f2937;--text:#e5e7eb;--muted:#94a3b8;--primary:#3b82f6}
-    body{background:var(--bg);color:var(--text)}
-    .container{max-width:960px;margin:0 auto;padding:1rem}
-    h1,h2{margin:.5rem 0}
-    .tabs{display:flex;gap:.5rem;margin:1rem 0}
-    .btn{padding:.4rem .8rem;border:1px solid var(--border);border-radius:.5rem;background:var(--card);cursor:pointer}
-    .btn.active{background:var(--primary);color:#fff}
-    input{width:100%;padding:.5rem;border:1px solid var(--border);border-radius:.5rem}
+    :root{--bg:#0f172a;--soft:#111827;--text:#e5e7eb;--muted:#94a3b8;--border:#1f2937;--primary:#3b82f6}
+    body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;background:var(--bg);color:var(--text)}
+    .container{max-width:1120px;margin:0 auto;padding:1.25rem}
+    header{display:flex;align-items:center;gap:.6rem;padding:.5rem 0;flex-wrap:wrap}
+    header img{height:32px;border-radius:.4rem}
+    .card{background:var(--soft);border:1px solid var(--border);border-radius:1rem;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+    .p{padding:1rem}
     .grid{display:grid;gap:1rem}
-    .grid-3{grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
-    .card{background:var(--card);border:1px solid var(--border);border-radius:.7rem;padding:.8rem}
-    .muted{color:var(--muted);font-size:.9rem}
-    .video-thumb img{width:100%;border-radius:.5rem}
-    footer{margin:2rem 0;text-align:center;color:var(--muted);font-size:.85rem}
+    @media(min-width:768px){.grid-3{grid-template-columns:repeat(3,1fr)}.grid-2{grid-template-columns:repeat(2,1fr)}}
+    .muted{color:var(--muted)}
+    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.55rem .85rem;border:1px solid var(--border);border-radius:.65rem;background:#0b1220;color:var(--text);text-decoration:none;cursor:pointer}
+    .btn.primary{background:var(--primary);border-color:var(--primary);color:#fff}
+    .tabbar{display:flex;gap:.4rem;flex-wrap:wrap}
+    .tab{padding:.4rem .7rem;border:1px solid var(--border);border-radius:.6rem;background:#0b1220;cursor:pointer}
+    .tab.active{background:var(--primary);border-color:var(--primary);color:#fff}
+    .pill{padding:.15rem .5rem;border:1px solid var(--border);border-radius:999px;font-size:.75rem;color:var(--muted)}
+    input[type="search"]{width:100%;padding:.7rem .9rem;border:1px solid var(--border);border-radius:.7rem;background:#0b1220;color:var(--text)}
+    .video-thumb{border-radius:.7rem;overflow:hidden;border:1px solid var(--border)}
+    footer{display:flex;justify-content:space-between;align-items:center;padding:1rem 0;color:var(--muted);flex-wrap:wrap;gap:.5rem}
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>📚 Arsip Jepang Mengaji</h2>
-    <div class="tabs">
-      <button class="btn active" id="tabVideo">Video</button>
-      <button class="btn" id="tabArtikel">Artikel</button>
-      <span id="count" class="muted" style="margin-left:auto">0 item</span>
+    <header>
+      <img src="jm.jpeg" alt="JM"/>
+      <strong>Arsip Jepang Mengaji</strong>
+      <nav style="margin-left:auto;display:flex;gap:.6rem;flex-wrap:wrap">
+        <a class="btn" href="index.html">🏠 Home</a>
+        <a class="btn" href="live.html">🔴 Live</a>
+        <a class="btn primary" href="https://www.youtube.com/@jepangmengaji1390" target="_blank" rel="noopener">▶️ YouTube</a>
+      </nav>
+    </header>
+
+    <!-- Tombol back -->
+    <div style="margin:1rem 0">
+      <a class="btn" href="index.html">⬅ Back to Home</a>
     </div>
-    <input id="q" type="search" placeholder="Cari (contoh: akidah, fiqih, tauhid, ramadhan)…"/>
-    <div style="margin:1rem 0"></div>
 
-    <div id="videoList" class="grid grid-3"></div>
-    <div id="articleList" class="grid grid-3" style="display:none"></div>
+    <section class="card">
+      <div class="p">
+        <div class="tabbar" role="tablist" aria-label="Kategori arsip">
+          <button class="tab active" data-tab="videos" role="tab" aria-selected="true">Video</button>
+          <button class="tab" data-tab="articles" role="tab" aria-selected="false">Artikel</button>
+          <span class="pill" id="countInfo">0 item</span>
+        </div>
+        <div style="height:.75rem"></div>
+        <input id="q" type="search" placeholder="Cari (contoh: akidah, fiqih, tauhid, ramadhan)..." aria-label="Cari video & artikel"/>
+      </div>
+    </section>
 
-    <footer>© <span id="year"></span> Jepang Mengaji</footer>
+    <section id="videos" class="card" style="margin-top:1rem">
+      <div class="p">
+        <h2 style="margin:.2rem 0 1rem">Video YouTube</h2>
+        <div id="videoList" class="grid grid-3"></div>
+      </div>
+    </section>
+
+    <section id="articles" class="card" style="margin-top:1rem;display:none">
+      <div class="p">
+        <h2 style="margin:.2rem 0 1rem">Artikel</h2>
+        <div id="articleList" class="grid grid-2"></div>
+      </div>
+    </section>
+
+    <footer>
+      <span>© <span id="y"></span> Jepang Mengaji</span>
+      <a class="btn" href="index.html">⬅ Back to Home</a>
+      <a class="muted" href="#top">Kembali ke atas</a>
+    </footer>
   </div>
 
-<script>
-  const CHANNEL_ID="UC3h0lpsfwETKD9v2mY6WVTQ";
-  const YT_RSS_PRIMARY=`https://cors.isomorphic-git.org/https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`;
-  const YT_RSS_FALLBACK=`https://r.jina.ai/http://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`;
-  const ARTICLES_CSV_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vQiIOueuc-YygpdulT9x9ZjJUA2jlaWXu2uGzwgHcugNebW5HLjR66luq3kHmqDvTmNJlSjpjsIQ6PG/pub?gid=0&single=true&output=csv";
+  <!-- script sama seperti versi rss2json -->
+  <script>
+    const CHANNEL_ID = "UC3h0lpsfwETKD9v2mY6WVTQ";
+    const FEED = `https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`;
+    const RSS2JSON = "https://api.rss2json.com/v1/api.json?rss_url=";
+    const ARTICLES_CSV_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vQiIOueuc-YygpdulT9x9ZjJUA2jlaWXu2uGzwgHcugNebW5HLjR66luq3kHmqDvTmNJlSjpjsIQ6PG/pub?gid=0&single=true&output=csv";
 
-  let allVideos=[],allArticles=[];
+    document.getElementById('y').textContent=new Date().getFullYear();
 
-  // === fetch YouTube RSS
-  async function fetchYouTubeRSS(){
-    try{
-      const res=await fetch(YT_RSS_PRIMARY+`&_=${Date.now()}`);
-      if(!res.ok) throw new Error("bad");
-      const xml=await res.text();
-      return parseXML(xml);
-    }catch(e){
-      console.warn("primary gagal, coba fallback:",e);
+    const tabs=document.querySelectorAll('.tab');
+    const secVideos=document.getElementById('videos');
+    const secArticles=document.getElementById('articles');
+    tabs.forEach(t=>t.addEventListener('click',()=>{
+      tabs.forEach(x=>x.classList.remove('active'));
+      t.classList.add('active');
+      const isVideos = t.dataset.tab==='videos';
+      secVideos.style.display = isVideos?'block':'none';
+      secArticles.style.display = isVideos?'none':'block';
+      updateCount();
+    }));
+
+    async function fetchYouTube(){
+      const res = await fetch(RSS2JSON + encodeURIComponent(FEED) + `&_=${Date.now()}`);
+      const data = await res.json();
+      if(!data || !Array.isArray(data.items)) return [];
+      return data.items.map(it=>{
+        const id = (it.link.split("v=")[1]||"").slice(0,11);
+        return {
+          id,
+          title: it.title || "",
+          published: new Date(it.pubDate || Date.now()),
+          link: it.link || `https://www.youtube.com/watch?v=${id}`,
+          thumb: it.thumbnail || `https://i.ytimg.com/vi/${id}/hqdefault.jpg`,
+          desc: (it.description||"")
+        };
+      }).sort((a,b)=>b.published - a.published);
     }
-    const res2=await fetch(YT_RSS_FALLBACK+`&_=${Date.now()}`);
-    const xml2=await res2.text();
-    return parseXML(xml2);
-  }
-  function parseXML(xml){
-    const doc=new DOMParser().parseFromString(xml,"text/xml");
-    return [...doc.querySelectorAll("entry")].map(e=>{
-      const id=(e.querySelector("yt\\:videoId, videoId")||{}).textContent||"";
-      return {
-        id,
-        title:(e.querySelector("title")||{}).textContent||"",
-        published:new Date((e.querySelector("published")||{}).textContent||""),
-        link:`https://www.youtube.com/watch?v=${id}`,
-        thumb:`https://i.ytimg.com/vi/${id}/hqdefault.jpg`,
-        desc:(e.querySelector("media\\:description, description")||{}).textContent||""
-      };
-    }).sort((a,b)=>b.published-a.published);
-  }
 
-  // === fetch CSV artikel
-  async function fetchCSV(url){
-    const res=await fetch(url);
-    const text=(await res.text()).replace(/^\uFEFF/,"");
-    const rows=[];let row=[],cell="",inQuotes=false;
-    for(let i=0;i<text.length;i++){
-      const c=text[i],n=text[i+1];
-      if(c=='"'){ if(inQuotes&&n=='"'){cell+='"';i++;} else inQuotes=!inQuotes; }
-      else if(c===','&&!inQuotes){row.push(cell);cell='';}
-      else if((c==='\n'||(c==='\r'&&n==='\n'))&&!inQuotes){ if(c==='\r') i++; row.push(cell);cell=''; if(row.length) rows.push(row); row=[];}
-      else { cell+=c; }
+    async function fetchCSV(url){
+      const res=await fetch(url+(url.includes('?')?'&':'?')+'_='+Date.now());
+      const text=(await res.text()).replace(/^\uFEFF/,'');
+      const rows=[];let row=[],cell='',inQuotes=false;
+      for(let i=0;i<text.length;i++){
+        const c=text[i],n=text[i+1];
+        if(c=='"'){ if(inQuotes&&n=='"'){cell+='"';i++;} else inQuotes=!inQuotes; }
+        else if(c===','&&!inQuotes){row.push(cell);cell='';}
+        else if((c==='\n'||(c==='\r'&&n==='\n'))&&!inQuotes){ if(c==='\r') i++; row.push(cell); cell=''; if(row.length) rows.push(row); row=[]; }
+        else { cell+=c; }
+      }
+      if(cell||row.length){row.push(cell);rows.push(row)}
+      const header=(rows.shift()||[]).map(h=>h.trim());
+      return rows.map(r=>Object.fromEntries(header.map((h,i)=>[h,(r[i]||'').trim()])));
     }
-    if(cell||row.length){row.push(cell);rows.push(row);}
-    const header=(rows.shift()||[]).map(h=>h.trim());
-    return rows.map(r=>Object.fromEntries(header.map((h,i)=>[h,(r[i]||"").trim()])));
-  }
 
-  function renderVideos(list){
-    const wrap=document.getElementById("videoList");
-    wrap.innerHTML="";
-    if(!list.length){wrap.innerHTML='<div class="muted">Belum ada video.</div>';return}
-    list.forEach(v=>{
-      const card=document.createElement("div");card.className="card";
-      card.innerHTML=`<div class="video-thumb"><a href="${v.link}" target="_blank" rel="noopener"><img src="${v.thumb}" alt="${v.title}"></a></div>
-      <h3>${v.title}</h3><div class="muted">${v.published.toLocaleDateString("id-ID",{year:"numeric",month:"short",day:"numeric"})}</div>`;
-      wrap.appendChild(card);
-    });
-  }
-  function renderArticles(list){
-    const wrap=document.getElementById("articleList");
-    wrap.innerHTML="";
-    if(!list.length){wrap.innerHTML='<div class="muted">Belum ada artikel.</div>';return}
-    list.forEach(a=>{
-      const card=document.createElement("div");card.className="card";
-      card.innerHTML=`<h3>${a.title||""}</h3><p class="muted">${a.excerpt||""}</p>
-      <div class="muted">${a.date?new Date(a.date).toLocaleDateString("id-ID",{year:"numeric",month:"short",day:"numeric"}):""}</div>
-      <a class="btn" href="${a.href||"#"}" target="_blank">Baca</a>`;
-      wrap.appendChild(card);
-    });
-  }
-  function updateCount(){
-    const active=document.getElementById("tabVideo").classList.contains("active")?"video":"artikel";
-    const n=active==="video"?allVideos.length:allArticles.length;
-    document.getElementById("count").textContent=n+" item";
-  }
+    let allVideos=[], allArticles=[];
+    function fmtDate(d){ return d ? d.toLocaleDateString('id-ID',{year:'numeric',month:'short',day:'numeric'}) : '' }
 
-  // === init
-  (async()=>{
-    document.getElementById("year").textContent=new Date().getFullYear();
-    [allVideos,allArticles]=await Promise.all([fetchYouTubeRSS(),fetchCSV(ARTICLES_CSV_URL)]);
-    renderVideos(allVideos);renderArticles(allArticles);updateCount();
+    function renderVideos(list){
+      const wrap=document.getElementById('videoList'); wrap.innerHTML='';
+      if(!list.length){wrap.innerHTML='<div class="muted">Belum ada video.</div>'; return}
+      list.forEach(v=>{
+        const a=document.createElement('a'); a.className='card'; a.href=v.link; a.target='_blank'; a.rel='noopener';
+        const p=document.createElement('div'); p.className='p';
+        p.innerHTML = `
+          <div class="video-thumb"><img src="${v.thumb}" alt=""></div>
+          <h3 style="margin:.6rem 0 .3rem">${v.title}</h3>
+          <div class="muted">${fmtDate(v.published)}</div>
+        `;
+        a.appendChild(p); wrap.appendChild(a);
+      });
+    }
+    function renderArticles(list){
+      const wrap=document.getElementById('articleList'); wrap.innerHTML='';
+      if(!list.length){wrap.innerHTML='<div class="muted">Belum ada artikel.</div>'; return}
+      list.forEach(a=>{
+        const card=document.createElement('article'); card.className='card';
+        const p=document.createElement('div'); p.className='p';
+        const h3=document.createElement('h3'); h3.textContent=a.title||''; p.appendChild(h3);
+        const ex=document.createElement('p'); ex.className='muted'; ex.textContent=a.excerpt||''; p.appendChild(ex);
+        const dt=document.createElement('div'); dt.className='muted'; dt.textContent=a.date?fmtDate(new Date(a.date)) : ''; p.appendChild(dt);
+        const link=document.createElement('a'); link.className='btn'; link.href=a.href||'#'; link.textContent='Baca';
+        if(/^https?:/i.test(link.href)){link.target='_blank';link.rel='noopener'}
+        p.appendChild(link); card.appendChild(p); wrap.appendChild(card);
+      });
+    }
+    function updateCount(){
+      const activeTab = document.querySelector('.tab.active')?.dataset.tab || 'videos';
+      const n = activeTab==='videos' ? document.querySelectorAll('#videoList > *').length
+                                     : document.querySelectorAll('#articleList > *').length;
+      document.getElementById('countInfo').textContent = `${n} item`;
+    }
 
-    // tab switch
-    document.getElementById("tabVideo").onclick=()=>{
-      document.getElementById("tabVideo").classList.add("active");
-      document.getElementById("tabArtikel").classList.remove("active");
-      document.getElementById("videoList").style.display="grid";
-      document.getElementById("articleList").style.display="none";updateCount();
-    };
-    document.getElementById("tabArtikel").onclick=()=>{
-      document.getElementById("tabArtikel").classList.add("active");
-      document.getElementById("tabVideo").classList.remove("active");
-      document.getElementById("videoList").style.display="none";
-      document.getElementById("articleList").style.display="grid";updateCount();
-    };
-
-    // search
-    const qBox=document.getElementById("q");
-    qBox.addEventListener("input",()=>{
-      const q=qBox.value.toLowerCase();
-      const videos=allVideos.filter(v=>(v.title+v.desc).toLowerCase().includes(q));
-      const arts=allArticles.filter(a=>(a.title+a.excerpt).toLowerCase().includes(q));
-      renderVideos(videos);renderArticles(arts);updateCount();
+    document.getElementById('q').addEventListener('input', e=>{
+      const q=e.target.value.toLowerCase();
+      const vFiltered = allVideos.filter(v => (v.title+' '+v.desc).toLowerCase().includes(q));
+      const aFiltered = allArticles.filter(a => (a.title+' '+(a.excerpt||'')).toLowerCase().includes(q));
+      renderVideos(vFiltered); renderArticles(aFiltered); updateCount();
     });
 
-    // prefill ?q=
-    const params=new URLSearchParams(location.search);
-    const initQ=params.get("q")||"";
-    if(initQ){
-      qBox.value=initQ;
-      qBox.dispatchEvent(new Event("input"));
-    }
-  })();
-</script>
+    (async ()=>{
+      try{
+        [allVideos, allArticles] = await Promise.all([
+          fetchYouTube(),
+          fetchCSV(ARTICLES_CSV_URL)
+        ]);
+        renderVideos(allVideos);
+        renderArticles(allArticles);
+        updateCount();
+        const params=new URLSearchParams(location.search);
+        const initQ=params.get('q')||'';
+        if(initQ){
+          const box=document.getElementById('q');
+          box.value=initQ;
+          box.dispatchEvent(new Event('input'));
+        }
+      }catch(err){
+        console.error(err);
+        document.getElementById('videoList').innerHTML='<div class="muted">Gagal memuat video.</div>';
+        document.getElementById('articleList').innerHTML='<div class="muted">Gagal memuat artikel.</div>';
+      }
+    })();
+  </script>
 </body>
 </html>
