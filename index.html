@@ -89,7 +89,6 @@
     .info-grid .poster img{width:100%;height:240px;object-fit:cover}
     .info-grid .post-card{background:var(--card);border:1px solid var(--border);border-radius:1rem;box-shadow:var(--shadow)}
     .info-grid .post-card .p{padding:1rem}
-    /* Typography rapi untuk konten tulisan */
     .info-body{line-height:1.75;white-space:normal;text-wrap:pretty;word-break:break-word}
     .info-body p{margin:.35rem 0}
     .info-body ul{margin:.35rem 0 .55rem 1.2rem;padding:0}
@@ -412,10 +411,10 @@
     window.addEventListener('scroll',()=>{backBtn.style.display=window.scrollY>300?'block':'none'});
     backBtn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
 
-    // utils
+    // ==== Utils
     function extractYouTubeId(input){
-      const m = String(input).match(/(?:v=|youtu\.be\/|embed\/)([A-Za-z0-9_-]{11})/);
-      return m ? m[1] : String(input).trim();
+      const m = String(input||'').match(/(?:v=|youtu\.be\/|embed\/)([A-Za-z0-9_-]{11})/);
+      return m ? m[1] : '';
     }
     function mountIframeBySrc(id,src){
       const el=document.getElementById(id);
@@ -444,7 +443,6 @@
           return;
         }
       }catch(e){ console.warn('Gagal ambil video terbaru:', e); }
-      // fallback live
       mountIframeBySrc('livePlayer', CHANNEL_LIVE_EMBED);
       mountIframeBySrc('livePlayer2', CHANNEL_LIVE_EMBED);
     }
@@ -467,7 +465,7 @@
       });
     }
 
-    // CSV helpers
+    // ==== CSV helpers (robust)
     async function fetchCSV(url){
       const res=await fetch(url+(url.includes('?')?'&':'?')+'_'+Date.now());
       const text=(await res.text()).replace(/^\uFEFF/,'');
@@ -483,12 +481,12 @@
       const header=(rows.shift()||[]).map(h=>h.trim());
       return rows.map(r=>Object.fromEntries(header.map((h,i)=>[h,(r[i]||'').trim()])));
     }
-
-    // ===== Normalizers for Articles & Kajian =====
     function pick(obj, keys){
       for(const k of keys){ const v=obj[k]; if(v && String(v).trim()) return String(v).trim(); }
       return '';
     }
+
+    // ==== Article / Kajian normalizers
     function normalizeArticleRow(r){
       return {
         title: pick(r, ['title','judul','nama','artikel','article']),
@@ -507,6 +505,164 @@
       };
     }
 
+    // ==== Info helpers (rapi + gambar dari Drive/IMAGE())
+    function escapeHtml(s){return String(s).replace(/[&<>"']/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]));}
+    function linkify(s){return String(s).replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');}
+    function formatInfoHTML(text){
+      if(!text) return '';
+      const lines = String(text).replace(/\r\n/g,'\n').split('\n');
+      let html='', inList=false, para=[];
+      const flushPara=()=>{ if(para.length){ html += `<p>${linkify(escapeHtml(para.join(' ')))}</p>`; para=[]; } };
+      for(const raw of lines){
+        const line = raw.trim();
+        if(!line){ flushPara(); if(inList){ html+='</ul>'; inList=false; } continue; }
+        const m = line.match(/^[-–•*]\s+(.*)$/);
+        if(m){ flushPara(); if(!inList){ html+='<ul>'; inList=true; } html += `<li>${linkify(escapeHtml(m[1]))}</li>`; }
+        else { if(inList){ html+='</ul>'; inList=false; } para.push(line); }
+      }
+      flushPara(); if(inList) html+='</ul>';
+      return html;
+    }
+
+    function extractUrl(s){
+      if(!s) return '';
+      const str = String(s);
+      // IMAGE("url") → ambil dalam tanda kutip pertama
+      const imgf = str.match(/IMAGE\(\s*"([^"]+)"/i);
+      if(imgf) return imgf[1];
+      const m = str.match(/https?:\/\/[^\s"'()<>]+/);
+      return m ? m[0] : '';
+    }
+    function fixImageUrl(u){
+      let url = extractUrl(u);
+      if(!url) return '';
+
+      // Google Drive → direct view
+      let m = url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
+      if(m){ return `https://drive.google.com/uc?export=view&id=${m[1]}`; }
+      m = url.match(/drive\.google\.com\/open\?id=([^&]+)/);
+      if(m){ return `https://drive.google.com/uc?export=view&id=${m[1]}`; }
+      m = url.match(/drive\.google\.com\/uc\?id=([^&]+)/);
+      if(m){ return `https://drive.google.com/uc?export=view&id=${m[1]}`; }
+
+      return url;
+    }
+    function sniffFirstImageUrl(row){
+      // 1) prioritas kolom khusus
+      let u = pick(row, ['gambar','image','img','foto','poster','posterurl','gambarurl','poster_url']);
+      if(u) return fixImageUrl(u);
+      // 2) cari URL gambar/drive di semua kolom
+      for(const v of Object.values(row)){
+        const c = extractUrl(v);
+        if(!c) continue;
+        if(/\.(png|jpe?g|webp|gif)(\?|$)/i.test(c) || /drive\.google\.com|googleusercontent\.com/i.test(c)){
+          return fixImageUrl(c);
+        }
+      }
+      // 3) dukung kolom 'driveid'
+      const id = pick(row, ['driveid','gdrive','id_gambar']);
+      if(id) return `https://drive.google.com/uc?export=view&id=${id}`;
+      return '';
+    }
+    function normalizeInfoRow(r){
+      const href = pick(r, ['href','link','url']);
+      let gambar = sniffFirstImageUrl(r);
+
+      // Jika belum ada gambar tapi ada link YouTube → pakai thumbnail
+      if(!gambar && href){
+        const yid = extractYouTubeId(href);
+        if(yid) gambar = `https://i.ytimg.com/vi/${yid}/hqdefault.jpg`;
+      }
+      return {
+        tipe: String(r.tipe || r.type || '').trim().toLowerCase(),
+        judul: String(r.judul || r.title || '').trim(),
+        tanggal: String(r.tanggal || r.date || '').trim(),
+        gambar,
+        konten: String(r.konten || r.content || '').trim(),
+        href
+      };
+    }
+
+    function renderInfos(list){
+      const wrap=document.getElementById('infos'); wrap.innerHTML='';
+      if(!list.length){
+        wrap.innerHTML='<div class="card"><div class="p muted">Belum ada info terbaru.</div></div>';
+        return;
+      }
+      const show = list.slice(0, INFO_HIGHLIGHT_COUNT);
+
+      show.forEach(it=>{
+        const d = document.createElement('div');
+        const p = document.createElement('div'); p.className='p';
+
+        // Jika poster-only (hanya gambar)
+        const posterOnly = !!it.gambar && !it.konten;
+
+        if(posterOnly){
+          d.className='card';
+          const a = document.createElement('a');
+          a.className='poster';
+          a.href = it.href || it.gambar;
+          if(/^https?:/i.test(a.href)){ a.target='_blank'; a.rel='noopener'; }
+          const img = document.createElement('img');
+          img.alt = it.judul || 'Poster';
+          img.src = it.gambar;
+          img.loading='lazy'; img.decoding='async';
+          img.onerror=()=>{ img.src='https://picsum.photos/800/500?random=11'; };
+          a.appendChild(img);
+          const title=document.createElement('h3'); title.style.margin='.6rem 0 .2rem'; title.textContent=it.judul||'Poster';
+          const dt=document.createElement('div'); dt.className='muted';
+          dt.textContent = it.tanggal ? new Date(it.tanggal).toLocaleDateString('ja-JP',{year:'numeric',month:'short',day:'numeric'}) : '';
+          p.appendChild(a); p.appendChild(title); p.appendChild(dt);
+          d.appendChild(p);
+          wrap.appendChild(d);
+          return;
+        }
+
+        // Kartu tulisan (jika ada gambar, tampilkan di atas)
+        d.className='post-card';
+        if(it.gambar){
+          const a = document.createElement('a');
+          a.className='poster';
+          a.href = it.href || it.gambar;
+          if(/^https?:/i.test(a.href)){ a.target='_blank'; a.rel='noopener'; }
+          const img=document.createElement('img');
+          img.alt=it.judul||'Poster'; img.src=it.gambar;
+          img.loading='lazy'; img.decoding='async';
+          img.onerror=()=>{ img.src='https://picsum.photos/800/500?random=12'; };
+          a.appendChild(img);
+          p.appendChild(a);
+        }
+        const title=document.createElement('h3'); title.textContent=it.judul||'Info';
+        const ex=document.createElement('div'); ex.className='info-body muted'; ex.innerHTML = formatInfoHTML(it.konten||'');
+        const dt=document.createElement('div'); dt.className='muted';
+        dt.textContent = it.tanggal ? new Date(it.tanggal).toLocaleDateString('ja-JP',{year:'numeric',month:'short',day:'numeric'}) : '';
+        p.appendChild(title); p.appendChild(ex); p.appendChild(dt);
+        if(it.href){
+          const a=document.createElement('a'); a.className='btn right'; a.href=it.href; a.textContent='Selengkapnya';
+          if(/^https?:/i.test(a.href)){ a.target='_blank'; a.rel='noopener'; }
+          p.appendChild(a);
+        }
+        d.appendChild(p);
+        wrap.appendChild(d);
+      });
+    }
+    async function loadInfos(){
+      try{
+        const rows = await fetchCSV(INFO_CSV_URL);
+        const items = rows.map(normalizeInfoRow)
+                          .filter(x=>x.judul || x.konten || x.gambar)
+                          .sort((a,b)=>new Date(b.tanggal||0)-new Date(a.tanggal||0));
+        if(items.length){ renderInfos(items); return; }
+      }catch(e){ console.warn('Gagal INFO_CSV',e); }
+      // fallback sample
+      renderInfos([
+        {tipe:'poster', judul:'Poster Contoh Kajian', tanggal:new Date().toISOString().slice(0,10), gambar:'https://picsum.photos/800/500?random=1', href:''},
+        {tipe:'tulisan', judul:'Perubahan Jadwal Kajian', tanggal:new Date().toISOString().slice(0,10), konten:'Kajian Sabtu diundur menjadi 20:00 JST.'}
+      ]);
+    }
+
+    // ==== Render Artikel & Kajian + Info
     function renderArticles(list){
       const wrap=document.getElementById('articles'); wrap.innerHTML='';
       if(!list.length){wrap.innerHTML='<div class="card"><div class="p muted">Belum ada artikel / gagal memuat.</div></div>';return}
@@ -535,103 +691,7 @@
       });
     }
 
-    /* ===== INFO TERBARU helpers ===== */
-    function escapeHtml(s){return String(s).replace(/[&<>"']/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]));}
-    function linkify(s){return s.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1<\/a>');}
-    function formatInfoHTML(text){
-      if(!text) return '';
-      const lines = String(text).replace(/\r\n/g,'\n').split('\n');
-      let html='', inList=false, para=[];
-      const flushPara=()=>{ if(para.length){ html += `<p>${linkify(escapeHtml(para.join(' ')))}</p>`; para=[]; } };
-      for(const raw of lines){
-        const line = raw.trim();
-        if(!line){ flushPara(); if(inList){ html+='</ul>'; inList=false; } continue; }
-        const m = line.match(/^[-–•*]\s+(.*)$/);
-        if(m){ flushPara(); if(!inList){ html+='<ul>'; inList=true; } html += `<li>${linkify(escapeHtml(m[1]))}</li>`; }
-        else { if(inList){ html+='</ul>'; inList=false; } para.push(line); }
-      }
-      flushPara(); if(inList) html+='</ul>';
-      return html;
-    }
-
-    function firstVal(obj, keys){
-      for(const key of keys){
-        const v = obj[key];
-        if(v && String(v).trim()) return String(v).trim();
-      }
-      return '';
-    }
-    function youtubeIdFromUrl(s){
-      if(!s) return '';
-      const m = String(s).match(/(?:v=|youtu\.be\/|embed\/)([A-Za-z0-9_-]{11})/);
-      return m? m[1] : '';
-    }
-    function fixImageUrl(u){
-      if(!u) return '';
-      let url = String(u).trim();
-      let m = url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
-      if(m){ return `https://drive.google.com/uc?export=view&id=${m[1]}`; }
-      m = url.match(/drive\.google\.com\/open\?id=([^&]+)/);
-      if(m){ return `https://drive.google.com/uc?export=view&id=${m[1]}`; }
-      m = url.match(/drive\.google\.com\/uc\?id=([^&]+)/);
-      if(m){ return `https://drive.google.com/uc?export=view&id=${m[1]}`; }
-      return url;
-    }
-
-    function normalizeInfoRow(r){
-      const href = firstVal(r, ['href','link','url']);
-      let gambar = firstVal(r, ['gambar','image','img','foto','poster','posterurl']);
-      if(!gambar && href){ const yid = youtubeIdFromUrl(href); if(yid) gambar = `https://i.ytimg.com/vi/${yid}/hqdefault.jpg`; }
-      return {
-        tipe: (r.tipe||r.type||'').toLowerCase(),
-        judul: r.judul||r.title||'',
-        tanggal: r.tanggal||r.date||'',
-        gambar: fixImageUrl(gambar),
-        konten: r.konten||r.content||'',
-        href: href,
-      };
-    }
-
-    function renderInfos(list){
-      const wrap=document.getElementById('infos'); wrap.innerHTML='';
-      if(!list.length){wrap.innerHTML='<div class="card"><div class="p muted">Belum ada info terbaru.</div></div>'; return;}
-      list.slice(0, INFO_HIGHLIGHT_COUNT).forEach(it=>{
-        const d = document.createElement('div');
-        if(it.tipe==='poster' && it.gambar){
-          d.className='card'; const p=document.createElement('div'); p.className='p';
-          const imgWrap=document.createElement('a'); imgWrap.className='poster'; imgWrap.href=it.href || it.gambar; if(/^https?:/i.test(imgWrap.href)){imgWrap.target='_blank';imgWrap.rel='noopener'}
-          const img=document.createElement('img'); img.alt=it.judul||'Poster'; img.src=it.gambar; img.loading='lazy'; img.decoding='async'; img.onerror=()=>{ img.src='https://picsum.photos/800/500?random=11'; }; imgWrap.appendChild(img);
-          const title=document.createElement('h3'); title.style.margin='.6rem 0 .2rem'; title.textContent=it.judul||'Poster';
-          const dt=document.createElement('div'); dt.className='muted'; dt.textContent=it.tanggal?new Date(it.tanggal).toLocaleDateString('ja-JP',{year:'numeric',month:'short',day:'numeric'}):'';
-          p.appendChild(imgWrap); p.appendChild(title); p.appendChild(dt); d.appendChild(p);
-        } else {
-          d.className='post-card';
-          const p=document.createElement('div'); p.className='p';
-          const title=document.createElement('h3'); title.textContent=it.judul||'Info';
-          const ex=document.createElement('div'); ex.className='info-body muted'; ex.innerHTML = formatInfoHTML(it.konten||'');
-          const dt=document.createElement('div'); dt.className='muted'; dt.textContent=it.tanggal?new Date(it.tanggal).toLocaleDateString('ja-JP',{year:'numeric',month:'short',day:'numeric'}):'';
-          p.appendChild(title); p.appendChild(ex); p.appendChild(dt);
-          if(it.href){ const a=document.createElement('a'); a.className='btn right'; a.href=it.href; a.textContent='Selengkapnya'; if(/^https?:/i.test(a.href)){a.target='_blank';a.rel='noopener'}; p.appendChild(a); }
-          d.appendChild(p);
-        }
-        wrap.appendChild(d);
-      });
-    }
-    async function loadInfos(){
-      try{
-        const rows = await fetchCSV(INFO_CSV_URL);
-        const items = rows.map(normalizeInfoRow).filter(x=>x.judul || x.konten || x.gambar).sort((a,b)=>new Date(b.tanggal||0)-new Date(a.tanggal||0));
-        if(items.length){ renderInfos(items); return; }
-      }catch(e){ console.warn('Gagal INFO_CSV',e); }
-      // fallback sample (tampil jika belum set sheet Info)
-      renderInfos([
-        {tipe:'poster', judul:'Poster Contoh Kajian', tanggal:new Date().toISOString().slice(0,10), gambar:'https://picsum.photos/800/500?random=1', href:''},
-        {tipe:'tulisan', judul:'Perubahan Jadwal Kajian', tanggal:new Date().toISOString().slice(0,10), konten:'Kajian Sabtu diundur menjadi 20:00 JST.'}
-      ]);
-    }
-
     async function initData(){
-      // Muat artikel & kajian dengan toleransi error, lalu tampilkan fallback jika kosong
       const [aRes, kRes] = await Promise.allSettled([
         fetchCSV(ARTICLES_CSV_URL),
         fetchCSV(KAJIAN_CSV_URL)
@@ -646,14 +706,12 @@
         try{ kajs = kRes.value.map(normalizeKajianRow).filter(x=>x.judul); }catch(_){}
       }
 
-      // Render atau fallback pesan
       if(arts.length){ renderArticles(arts); }
       else{ const wrap=document.getElementById('articles'); if(wrap) wrap.innerHTML='<div class="card"><div class="p muted">Belum ada artikel / gagal memuat.</div></div>'; }
 
       if(kajs.length){ renderKajian(kajs); }
       else{ const wrap=document.getElementById('kajians'); if(wrap) wrap.innerHTML='<div class="card"><div class="p muted">Belum ada data kajian / gagal memuat.</div></div>'; }
 
-      // Info highlight (punya fallback internal)
       await loadInfos();
     }
     initData();
