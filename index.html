@@ -95,6 +95,15 @@
     .info-body ul{margin:.35rem 0 .55rem 1.2rem;padding:0}
     .info-body li{margin:.2rem 0}
     .info-body a{text-decoration:underline}
+
+    /* credit badge */
+    .credit{
+      padding:.25rem .6rem;
+      border:1px solid var(--border);
+      border-radius:.55rem;
+      background:color-mix(in oklab,var(--bg-soft) 60%, transparent);
+      font-size:.9rem;
+    }
   </style>
 </head>
 <body>
@@ -113,7 +122,8 @@
 
       <div class="nav-center">
         <nav class="nav-links" aria-label="Navigasi utama">
-          <a href="#info">Info Terbaru</a>          <a href="#artikel">Artikel</a>
+          <a href="#info">Info Terbaru</a>
+          <a href="#artikel">Artikel</a>
           <a href="#kajian">Info Kajian</a>
           <a href="#live">Live</a>
           <a href="live.html">Halaman Live</a>
@@ -136,7 +146,8 @@
     <!-- drawer mobile -->
     <div id="drawer">
       <div class="menu">
-        <a href="#info">Info Terbaru</a>        <a href="#artikel">Artikel</a>
+        <a href="#info">Info Terbaru</a>
+        <a href="#artikel">Artikel</a>
         <a href="#kajian">Info Kajian</a>
         <a href="#live">Live</a>
         <a href="live.html">Halaman Live</a>
@@ -161,7 +172,8 @@
         <p class="muted">Artikel, info kajian sunnah, live YouTube, dan donasi kegiatan dakwah di Jepang.</p>
         <div class="flex" style="flex-wrap:wrap;gap:.5rem">
           <a class="btn primary" href="#kajian">📅 Lihat Kajian</a>
-          <a class="btn" href="#info">🆕 Info Terbaru</a>          <a class="btn" href="#artikel">📖 Artikel</a>
+          <a class="btn" href="#info">🆕 Info Terbaru</a>
+          <a class="btn" href="#artikel">📖 Artikel</a>
           <a class="btn" href="live.html">▶️ Live</a>
           <a class="btn" href="arsip.html">🗂️ Arsip</a>
         </div>
@@ -341,7 +353,7 @@
             <a href="https://wa.me/817084810427?text=Assalamu%27alaikum%2C%20saya%20ingin%20konfirmasi%20Donasi%20Masjid.%0ANama%3A%20-%0ANominal%3A%20-%0ATanggal%3A%20-%0ATransfer%20ke%3A%20(SMBC%20%2F%20Yucho)" target="_blank" rel="noopener">WhatsApp</a> ·
             <a href="tel:+817084810427">Telp</a>
           </li>
-          <li>✉️ Email Panitia — <a href="mailto:panitia@jepangmengaji.org">panitia@jepangmengaji.org</a></li>
+          <li>✉️ Email Panitia — <a href="mailto:jepangmengaji@gmail.com">jepangmengaji@gmail.com</a></li>
         </ul>
       </div></aside>
     </div>
@@ -350,8 +362,12 @@
   <!-- FOOTER -->
   <footer class="footer">
     <div class="container" style="padding:1rem 0;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap">
-      <div class="flex" style="gap:.5rem"><img src="jm.jpeg" alt="Logo" style="height:24px;border-radius:.25rem"/><span class="muted">© <span id="year"></span> Jepang Mengaji</span></div>
-      <div class="flex" style="gap:1rem">
+      <div class="flex" style="gap:.5rem">
+        <img src="jm.jpeg" alt="Logo" style="height:24px;border-radius:.25rem"/>
+        <span class="muted">© <span id="year"></span> Jepang Mengaji</span>
+      </div>
+      <div class="flex" style="gap:1rem;align-items:center">
+        <span class="muted credit">Design by Wahyu</span>
         <a class="muted" href="arsip.html">Arsip</a>
         <a class="muted" href="#">Privasi</a>
         <a class="muted" href="#">Ketentuan</a>
@@ -467,9 +483,33 @@
       const header=(rows.shift()||[]).map(h=>h.trim());
       return rows.map(r=>Object.fromEntries(header.map((h,i)=>[h,(r[i]||'').trim()])));
     }
+
+    // ===== Normalizers for Articles & Kajian =====
+    function pick(obj, keys){
+      for(const k of keys){ const v=obj[k]; if(v && String(v).trim()) return String(v).trim(); }
+      return '';
+    }
+    function normalizeArticleRow(r){
+      return {
+        title: pick(r, ['title','judul','nama','artikel','article']),
+        excerpt: pick(r, ['excerpt','ringkasan','deskripsi','desc','konten','content']),
+        date: pick(r, ['date','tanggal','published','tgl']),
+        href: pick(r, ['href','link','url'])
+      };
+    }
+    function normalizeKajianRow(r){
+      return {
+        judul: pick(r, ['judul','title','tema','materi']),
+        ustadz: pick(r, ['ustadz','pemateri','narasumber']),
+        waktu: pick(r, ['waktu','jadwal','tanggal','tgl','date']),
+        lokasi: pick(r, ['lokasi','tempat','venue','alamat']),
+        mapUrl: pick(r, ['mapUrl','maps','map','link','url'])
+      };
+    }
+
     function renderArticles(list){
       const wrap=document.getElementById('articles'); wrap.innerHTML='';
-      if(!list.length){wrap.innerHTML='<div class="card"><div class="p muted">Belum ada artikel.</div></div>';return}
+      if(!list.length){wrap.innerHTML='<div class="card"><div class="p muted">Belum ada artikel / gagal memuat.</div></div>';return}
       list.forEach(a=>{
         const card=document.createElement('article');card.className='card';
         const p=document.createElement('div');p.className='p';
@@ -482,7 +522,7 @@
     }
     function renderKajian(list){
       const wrap=document.getElementById('kajians'); wrap.innerHTML='';
-      if(!list.length){wrap.innerHTML='<div class="card"><div class="p muted">Belum ada kajian.</div></div>';return}
+      if(!list.length){wrap.innerHTML='<div class="card"><div class="p muted">Belum ada data kajian / gagal memuat.</div></div>';return}
       list.forEach(k=>{
         const card=document.createElement('article');card.className='card';
         const p=document.createElement('div');p.className='p';
@@ -550,8 +590,8 @@
         konten: r.konten||r.content||'',
         href: href,
       };
-    };
     }
+
     function renderInfos(list){
       const wrap=document.getElementById('infos'); wrap.innerHTML='';
       if(!list.length){wrap.innerHTML='<div class="card"><div class="p muted">Belum ada info terbaru.</div></div>'; return;}
@@ -591,11 +631,30 @@
     }
 
     async function initData(){
-      try{
-        const [a,k]=await Promise.all([fetchCSV(ARTICLES_CSV_URL),fetchCSV(KAJIAN_CSV_URL)]);
-        renderArticles(a); renderKajian(k);
-      }catch(e){console.error(e)}
-      loadInfos();
+      // Muat artikel & kajian dengan toleransi error, lalu tampilkan fallback jika kosong
+      const [aRes, kRes] = await Promise.allSettled([
+        fetchCSV(ARTICLES_CSV_URL),
+        fetchCSV(KAJIAN_CSV_URL)
+      ]);
+
+      let arts = [];
+      if(aRes.status==='fulfilled'){
+        try{ arts = aRes.value.map(normalizeArticleRow).filter(x=>x.title||x.href); }catch(_){}
+      }
+      let kajs = [];
+      if(kRes.status==='fulfilled'){
+        try{ kajs = kRes.value.map(normalizeKajianRow).filter(x=>x.judul); }catch(_){}
+      }
+
+      // Render atau fallback pesan
+      if(arts.length){ renderArticles(arts); }
+      else{ const wrap=document.getElementById('articles'); if(wrap) wrap.innerHTML='<div class="card"><div class="p muted">Belum ada artikel / gagal memuat.</div></div>'; }
+
+      if(kajs.length){ renderKajian(kajs); }
+      else{ const wrap=document.getElementById('kajians'); if(wrap) wrap.innerHTML='<div class="card"><div class="p muted">Belum ada data kajian / gagal memuat.</div></div>'; }
+
+      // Info highlight (punya fallback internal)
+      await loadInfos();
     }
     initData();
 
