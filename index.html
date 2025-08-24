@@ -83,6 +83,12 @@
     @media(min-width:992px){.section.contact .grid-2{grid-template-columns:1.25fr .75fr}}
 
     .video-thumb{border-radius:.7rem;overflow:hidden;border:1px solid var(--border)}
+
+    /* ===== INFO TERBARU ===== */
+    .info-grid .poster{display:block;border:1px solid var(--border);border-radius:.7rem;overflow:hidden;background:var(--bg-soft)}
+    .info-grid .poster img{width:100%;height:240px;object-fit:cover}
+    .info-grid .post-card{background:var(--card);border:1px solid var(--border);border-radius:1rem;box-shadow:var(--shadow)}
+    .info-grid .post-card .p{padding:1rem}
   </style>
 </head>
 <body>
@@ -101,6 +107,8 @@
 
       <div class="nav-center">
         <nav class="nav-links" aria-label="Navigasi utama">
+          <a href="#info">Info Terbaru</a>
+          <a href="info.html">Halaman Info</a>
           <a href="#artikel">Artikel</a>
           <a href="#kajian">Info Kajian</a>
           <a href="#live">Live</a>
@@ -124,6 +132,8 @@
     <!-- drawer mobile -->
     <div id="drawer">
       <div class="menu">
+        <a href="#info">Info Terbaru</a>
+        <a href="info.html">Halaman Info</a>
         <a href="#artikel">Artikel</a>
         <a href="#kajian">Info Kajian</a>
         <a href="#live">Live</a>
@@ -149,6 +159,8 @@
         <p class="muted">Artikel, info kajian sunnah, live YouTube, dan donasi kegiatan dakwah di Jepang.</p>
         <div class="flex" style="flex-wrap:wrap;gap:.5rem">
           <a class="btn primary" href="#kajian">📅 Lihat Kajian</a>
+          <a class="btn" href="#info">🆕 Info Terbaru</a>
+          <a class="btn" href="info.html">📰 Halaman Info</a>
           <a class="btn" href="#artikel">📖 Artikel</a>
           <a class="btn" href="live.html">▶️ Live</a>
           <a class="btn" href="arsip.html">🗂️ Arsip</a>
@@ -160,6 +172,17 @@
         <div class="space"></div>
         <div class="flex"><input id="ytId" class="input" placeholder="Masukkan YouTube Video ID/URL (kosongkan untuk video terbaru)"/><button class="btn" id="applyId">Terapkan</button></div>
       </div></div>
+    </div>
+  </section>
+
+  <!-- INFO TERBARU -->
+  <section id="info" class="section" style="background:var(--bg-soft)">
+    <div class="container">
+      <div class="flex" style="align-items:center">
+        <h2>Info Terbaru</h2>
+        <a class="btn right" href="#kontak">➕ Kirim Info</a>
+      </div>
+      <div id="infos" class="grid grid-3 info-grid"></div>
     </div>
   </section>
 
@@ -352,6 +375,7 @@
     /* ====== DATA SHEETS ====== */
     const ARTICLES_CSV_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vQiIOueuc-YygpdulT9x9ZjJUA2jlaWXu2uGzwgHcugNebW5HLjR66luq3kHmqDvTmNJlSjpjsIQ6PG/pub?gid=0&single=true&output=csv";
     const KAJIAN_CSV_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vQiIOueuc-YygpdulT9x9ZjJUA2jlaWXu2uGzwgHcugNebW5HLjR66luq3kHmqDvTmNJlSjpjsIQ6PG/pub?gid=450885199&single=true&output=csv";
+    const INFO_CSV_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vQiIOueuc-YygpdulT9x9ZjJUA2jlaWXu2uGzwgHcugNebW5HLjR66luq3kHmqDvTmNJlSjpjsIQ6PG/pub?gid=1656910010&single=true&output=csv";
 
     /* ====== YOUTUBE CONFIG ====== */
     const CHANNEL_ID = "UC3h0lpsfwETKD9v2mY6WVTQ";
@@ -428,7 +452,7 @@
 
     // CSV helpers
     async function fetchCSV(url){
-      const res=await fetch(url+(url.includes('?')?'&':'?')+'_='+Date.now());
+      const res=await fetch(url+(url.includes('?')?'&':'?')+'_'+Date.now());
       const text=(await res.text()).replace(/^\uFEFF/,'');
       const rows=[];let row=[],cell='',inQuotes=false;
       for(let i=0;i<text.length;i++){
@@ -469,11 +493,62 @@
         card.appendChild(p);wrap.appendChild(card);
       });
     }
+
+    /* ===== INFO TERBARU helpers ===== */
+    function normalizeInfoRow(r){
+      return {
+        tipe: (r.tipe||r.type||'').toLowerCase(),
+        judul: r.judul||r.title||'',
+        tanggal: r.tanggal||r.date||'',
+        gambar: r.gambar||r.image||'',
+        konten: r.konten||r.content||'',
+        href: r.href||r.link||'',
+      };
+    }
+    function renderInfos(list){
+      const wrap=document.getElementById('infos'); wrap.innerHTML='';
+      if(!list.length){wrap.innerHTML='<div class="card"><div class="p muted">Belum ada info terbaru.</div></div>'; return;}
+      list.slice(0,6).forEach(it=>{
+        const d = document.createElement('div');
+        if(it.tipe==='poster' && it.gambar){
+          d.className='card'; const p=document.createElement('div'); p.className='p';
+          const imgWrap=document.createElement('a'); imgWrap.className='poster'; imgWrap.href=it.href || it.gambar; if(/^https?:/i.test(imgWrap.href)){imgWrap.target='_blank';imgWrap.rel='noopener'}
+          imgWrap.innerHTML = `<img src="${it.gambar}" alt="${it.judul?it.judul:''}">`;
+          const title=document.createElement('h3'); title.style.margin='.6rem 0 .2rem'; title.textContent=it.judul||'Poster';
+          const dt=document.createElement('div'); dt.className='muted'; dt.textContent=it.tanggal?new Date(it.tanggal).toLocaleDateString('ja-JP',{year:'numeric',month:'short',day:'numeric'}):'';
+          p.appendChild(imgWrap); p.appendChild(title); p.appendChild(dt); d.appendChild(p);
+        } else {
+          d.className='post-card';
+          const p=document.createElement('div'); p.className='p';
+          const title=document.createElement('h3'); title.textContent=it.judul||'Info';
+          const ex=document.createElement('p'); ex.className='muted'; ex.textContent=it.konten||'';
+          const dt=document.createElement('div'); dt.className='muted'; dt.textContent=it.tanggal?new Date(it.tanggal).toLocaleDateString('ja-JP',{year:'numeric',month:'short',day:'numeric'}):'';
+          p.appendChild(title); p.appendChild(ex); p.appendChild(dt);
+          if(it.href){ const a=document.createElement('a'); a.className='btn right'; a.href=it.href; a.textContent='Selengkapnya'; if(/^https?:/i.test(a.href)){a.target='_blank';a.rel='noopener'}; p.appendChild(a); }
+          d.appendChild(p);
+        }
+        wrap.appendChild(d);
+      });
+    }
+    async function loadInfos(){
+      try{
+        const rows = await fetchCSV(INFO_CSV_URL);
+        const items = rows.map(normalizeInfoRow).filter(x=>x.judul || x.konten || x.gambar).sort((a,b)=>new Date(b.tanggal||0)-new Date(a.tanggal||0));
+        if(items.length){ renderInfos(items); return; }
+      }catch(e){ console.warn('Gagal INFO_CSV',e); }
+      // fallback sample (tampil jika belum set sheet Info)
+      renderInfos([
+        {tipe:'poster', judul:'Poster Contoh Kajian', tanggal:new Date().toISOString().slice(0,10), gambar:'https://picsum.photos/800/500?random=1', href:''},
+        {tipe:'tulisan', judul:'Perubahan Jadwal Kajian', tanggal:new Date().toISOString().slice(0,10), konten:'Kajian Sabtu diundur menjadi 20:00 JST.'}
+      ]);
+    }
+
     async function initData(){
       try{
         const [a,k]=await Promise.all([fetchCSV(ARTICLES_CSV_URL),fetchCSV(KAJIAN_CSV_URL)]);
         renderArticles(a); renderKajian(k);
       }catch(e){console.error(e)}
+      loadInfos();
     }
     initData();
 
