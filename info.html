@@ -51,6 +51,13 @@
 
     .post-card .title{margin:.4rem 0 .2rem}
 
+    /* Typography yang rapi untuk tulisan panjang */
+    .info-body{line-height:1.75;white-space:normal;text-wrap:pretty;word-break:break-word}
+    .info-body p{margin:.4rem 0}
+    .info-body ul{margin:.4rem 0 .6rem 1.2rem;padding:0}
+    .info-body li{margin:.2rem 0}
+    .info-body a{text-decoration:underline}
+
     .pager{display:flex;gap:.4rem;justify-content:center;margin:1rem 0;flex-wrap:wrap}
     .pager button{padding:.45rem .7rem;border:1px solid var(--border);border-radius:.5rem;background:var(--card);cursor:pointer}
     .pager button[disabled]{opacity:.5;cursor:not-allowed}
@@ -85,7 +92,7 @@
   <section class="hero">
     <div class="container">
       <h1>Info Terbaru</h1>
-      <p class="muted">Poster & pengumuman komunitas. Tambahkan dari Google Sheets tab "Info".</p>
+      <p class="muted">Info dan Pengumuman Jepang Mengaji"Info".</p>
 
       <div class="toolbar">
         <input id="q" class="input" type="search" placeholder="Cari judul/konten…" />
@@ -129,7 +136,6 @@
 
   <script>
     // ===== CONFIG =====
-    // Ganti gid=123456789 dengan gid tab "Info" pada Google Sheets Anda (sudah di-Publish to web)
     const INFO_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQiIOueuc-YygpdulT9x9ZjJUA2jlaWXu2uGzwgHcugNebW5HLjR66luq3kHmqDvTmNJlSjpjsIQ6PG/pub?gid=1656910010&single=true&output=csv";
 
     // ===== THEME =====
@@ -157,6 +163,26 @@
       return rows.map(r=>Object.fromEntries(header.map((h,i)=>[h,(r[i]||'').trim()])));
     }
     const toDate = (s)=>{ const d = new Date(s||''); return isNaN(d)? new Date(0): d; };
+
+    // ===== Formatting helpers (rapikan tulisan) =====
+    function escapeHtml(s){return String(s).replace(/[&<>"']/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]));}
+    function linkify(s){return s.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1<\/a>');}
+    function formatInfoHTML(text){
+      if(!text) return '';
+      const lines = String(text).replace(/\r\n/g,'\n').split('\n');
+      let html='', inList=false, para=[];
+      const flushPara=()=>{ if(para.length){ html += `<p>${linkify(escapeHtml(para.join(' ')))}</p>`; para=[]; } };
+      for(const raw of lines){
+        const line = raw.trim();
+        if(!line){ flushPara(); if(inList){ html+='</ul>'; inList=false; } continue; }
+        const m = line.match(/^[-–•*]\s+(.*)$/);
+        if(m){ flushPara(); if(!inList){ html+='<ul>'; inList=true; } html += `<li>${linkify(escapeHtml(m[1]))}</li>`; }
+        else { if(inList){ html+='</ul>'; inList=false; } para.push(line); }
+      }
+      flushPara(); if(inList) html+='</ul>';
+      return html;
+    }
+
     function norm(r){
       return {
         tipe: (r.tipe||r.type||'').toLowerCase(),
@@ -236,7 +262,7 @@
             d.className='card post-card';
             const p=document.createElement('div'); p.className='p';
             const h=document.createElement('h3'); h.className='title'; h.textContent=it.judul||'Info';
-            const ex=document.createElement('p'); ex.className='muted'; ex.textContent=it.konten||'';
+            const ex=document.createElement('div'); ex.className='info-body'; ex.innerHTML = formatInfoHTML(it.konten||'');
             const dt=document.createElement('div'); dt.className='muted'; dt.textContent=it.tanggal? new Date(it.tanggal).toLocaleDateString('ja-JP',{year:'numeric',month:'short',day:'numeric'}):'';
             p.appendChild(h); p.appendChild(ex); p.appendChild(dt);
             if(it.href){ const a=document.createElement('a'); a.className='btn'; a.href=it.href; a.textContent='Selengkapnya'; if(/^https?:/i.test(a.href)){a.target='_blank';a.rel='noopener'}; p.appendChild(a); }
@@ -274,10 +300,7 @@
     }
 
     // ===== Lightbox =====
-    function openLightbox(it){
-      el.lbImg.src = it.gambar; el.lbTitle.textContent = it.judul||'Poster'; el.lbOpen.href = it.gambar;
-      el.lb.removeAttribute('hidden'); el.lb.setAttribute('aria-hidden','false');
-    }
+    function openLightbox(it){ el.lbImg.src = it.gambar; el.lbTitle.textContent = it.judul||'Poster'; el.lbOpen.href = it.gambar; el.lb.removeAttribute('hidden'); el.lb.setAttribute('aria-hidden','false'); }
     function closeLightbox(){ el.lb.setAttribute('aria-hidden','true'); el.lb.setAttribute('hidden',''); el.lbImg.src=''; }
     el.lbClose.addEventListener('click', closeLightbox);
     el.lb.addEventListener('click', (e)=>{ if(e.target===el.lb) closeLightbox(); });
