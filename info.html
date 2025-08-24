@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Info Terbaru — Jepang Mengaji</title>
+  <meta name="description" content="Poster & pengumuman terbaru Jepang Mengaji (JST)." />
+  <link rel="icon" href="jm.jpeg" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <script>(function(){try{var t=localStorage.getItem('jm-theme'); if(t) document.documentElement.setAttribute('data-theme', t);}catch(e){}})();</script>
+  <style>
+    :root{--bg:#fff;--bg-soft:#f8fafc;--text:#0f172a;--muted:#475569;--card:#fff;--border:#e2e8f0;--primary:#3b82f6;--accent:#22c55e;--danger:#ef4444;--shadow:0 10px 25px rgba(2,6,23,.08)}
+    [data-theme="dark"]{--bg:#0f172a;--bg-soft:#111827;--text:#e5e7eb;--muted:#94a3b8;--card:#111827;--border:#1f2937;--shadow:0 10px 30px rgba(0,0,0,.25)}
+
+    html,body{height:100%}
+    body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,"Noto Sans",sans-serif;color:var(--text);background:var(--bg)}
+    a{text-decoration:none;color:inherit}
+    img{max-width:100%;display:block}
+
+    .container{max-width:1120px;margin:0 auto;padding:0 1rem}
+    .nav{position:sticky;top:0;z-index:40;background:color-mix(in oklab,var(--bg) 85%, transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+    .nav-inner{display:flex;gap:1rem;align-items:center;padding:.65rem 0}
+    .brand{display:flex;align-items:center;gap:.6rem;min-width:0}
+    .brand .logo{height:40px;border-radius:.5rem;background:#fff;box-shadow:var(--shadow)}
+    [data-theme="dark"] .brand .logo{background:#0b1220}
+    .nav-right{margin-left:auto;display:flex;gap:.5rem}
+    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.55rem .9rem;border:1px solid var(--border);border-radius:.7rem;background:var(--card);cursor:pointer}
+    .btn:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
+    .btn.primary{background:var(--primary);border-color:var(--primary);color:#fff}
+    .badge{padding:.1rem .4rem;font-size:.75rem;background:rgba(148,163,184,.25);border:1px solid var(--border);border-radius:.4rem;white-space:nowrap}
+
+    .hero{padding:1.2rem 0}
+    .hero h1{margin:.2rem 0 .4rem}
+    .muted{color:var(--muted)}
+
+    .toolbar{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:.6rem;align-items:center;margin:1rem 0}
+    @media(max-width:800px){.toolbar{grid-template-columns:1fr 1fr;grid-auto-rows:auto}}
+    .input, select{padding:.5rem .6rem;border:1px solid var(--border);border-radius:.6rem;background:var(--card);color:var(--text)}
+
+    .grid{display:grid;gap:1rem}
+    .grid-3{grid-template-columns:1fr}
+    @media(min-width:768px){.grid-3{grid-template-columns:repeat(3,1fr)}}
+
+    .card{background:var(--card);border:1px solid var(--border);border-radius:1rem;box-shadow:var(--shadow)}
+    .card>.p{padding:1rem}
+
+    .poster{display:block;border:1px solid var(--border);border-radius:.7rem;overflow:hidden;background:var(--bg-soft)}
+    .poster img{width:100%;height:240px;object-fit:cover}
+
+    .post-card .title{margin:.4rem 0 .2rem}
+
+    .pager{display:flex;gap:.4rem;justify-content:center;margin:1rem 0;flex-wrap:wrap}
+    .pager button{padding:.45rem .7rem;border:1px solid var(--border);border-radius:.5rem;background:var(--card);cursor:pointer}
+    .pager button[disabled]{opacity:.5;cursor:not-allowed}
+    .pager .active{background:var(--primary);border-color:var(--primary);color:#fff}
+
+    /* lightbox */
+    #lightbox[aria-hidden="false"]{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.8);z-index:60}
+    #lightbox[aria-hidden="true"], #lightbox[hidden]{display:none}
+    #lightbox .inner{max-width:min(92vw,1100px);max-height:88vh;background:#000;border-radius:.6rem;overflow:hidden}
+    #lightbox img{display:block;max-width:100%;max-height:88vh;margin:0 auto}
+    #lightbox .bar{display:flex;justify-content:space-between;align-items:center;padding:.5rem 1rem;background:rgba(0,0,0,.6);color:#fff}
+    #lightbox .bar a{color:#fff;text-decoration:underline}
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <div class="brand">
+        <img src="jm.jpeg" alt="Logo" class="logo" />
+        <div style="display:flex;flex-direction:column;line-height:1.1">
+          <a href="index.html" style="font-size:1.05rem;font-weight:700">Jepang Mengaji</a>
+          <span class="badge">Info Terbaru</span>
+        </div>
+      </div>
+      <div class="nav-right">
+        <button class="btn" id="themeToggle" aria-label="Toggle Theme">🌗</button>
+        <a class="btn primary" href="#kontak">Kontak</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <h1>Info Terbaru</h1>
+      <p class="muted">Poster & pengumuman komunitas. Tambahkan dari Google Sheets tab "Info".</p>
+
+      <div class="toolbar">
+        <input id="q" class="input" type="search" placeholder="Cari judul/konten…" />
+        <select id="type">
+          <option value="">Semua tipe</option>
+          <option value="poster">Poster</option>
+          <option value="tulisan">Tulisan</option>
+        </select>
+        <select id="sort">
+          <option value="desc">Terbaru dulu</option>
+          <option value="asc">Terlama dulu</option>
+        </select>
+        <div class="muted" id="counter" style="justify-self:end">0 item</div>
+      </div>
+
+      <div id="list" class="grid grid-3"></div>
+      <div id="pager" class="pager"></div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container" style="padding:1rem 0;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap">
+      <div class="muted">© <span id="year"></span> Jepang Mengaji</div>
+      <div class="muted"><a href="index.html">↩ Kembali ke Beranda</a></div>
+    </div>
+  </footer>
+
+  <!-- Lightbox -->
+  <div id="lightbox" aria-hidden="true" hidden>
+    <div class="inner">
+      <div class="bar">
+        <strong id="lbTitle">Poster</strong>
+        <div style="display:flex;gap:1rem;align-items:center">
+          <a id="lbOpen" href="#" target="_blank" rel="noopener">Buka gambar</a>
+          <button class="btn" id="lbClose">Tutup ✕</button>
+        </div>
+      </div>
+      <img id="lbImg" alt="Poster" />
+    </div>
+  </div>
+
+  <script>
+    // ===== CONFIG =====
+    // Ganti gid=123456789 dengan gid tab "Info" pada Google Sheets Anda (sudah di-Publish to web)
+    const INFO_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQiIOueuc-YygpdulT9x9ZjJUA2jlaWXu2uGzwgHcugNebW5HLjR66luq3kHmqDvTmNJlSjpjsIQ6PG/pub?gid=1656910010&single=true&output=csv";
+
+    // ===== THEME =====
+    document.getElementById('year').textContent = new Date().getFullYear();
+    document.getElementById('themeToggle').addEventListener('click', ()=>{
+      const cur = document.documentElement.getAttribute('data-theme')==='light'?'dark':'light';
+      document.documentElement.setAttribute('data-theme',cur);
+      localStorage.setItem('jm-theme',cur);
+    });
+
+    // ===== UTILS =====
+    async function fetchCSV(url){
+      const res=await fetch(url+(url.includes('?')?'&':'?')+'_'+Date.now());
+      const text=(await res.text()).replace(/^\uFEFF/,'');
+      const rows=[];let row=[],cell='',inQuotes=false;
+      for(let i=0;i<text.length;i++){
+        const c=text[i],n=text[i+1];
+        if(c=='"'){ if(inQuotes&&n=='"'){cell+='"';i++;} else inQuotes=!inQuotes; }
+        else if(c===','&&!inQuotes){row.push(cell);cell='';}
+        else if((c==='\n'||(c==='\r'&&n==='\n'))&&!inQuotes){ if(c==='\r') i++; row.push(cell); cell=''; if(row.length) rows.push(row); row=[]; }
+        else { cell+=c; }
+      }
+      if(cell||row.length){row.push(cell);rows.push(row)}
+      const header=(rows.shift()||[]).map(h=>h.trim());
+      return rows.map(r=>Object.fromEntries(header.map((h,i)=>[h,(r[i]||'').trim()])));
+    }
+    const toDate = (s)=>{ const d = new Date(s||''); return isNaN(d)? new Date(0): d; };
+    function norm(r){
+      return {
+        tipe: (r.tipe||r.type||'').toLowerCase(),
+        judul: r.judul||r.title||'',
+        tanggal: r.tanggal||r.date||'',
+        gambar: r.gambar||r.image||'',
+        konten: r.konten||r.content||'',
+        href: r.href||r.link||''
+      };
+    }
+
+    // ===== STATE =====
+    const state = { q:'', type:'', sort:'desc', page:1, per:12, all:[] };
+    const el = {
+      list: document.getElementById('list'),
+      pager: document.getElementById('pager'),
+      q: document.getElementById('q'),
+      type: document.getElementById('type'),
+      sort: document.getElementById('sort'),
+      counter: document.getElementById('counter'),
+      lb: document.getElementById('lightbox'),
+      lbImg: document.getElementById('lbImg'),
+      lbTitle: document.getElementById('lbTitle'),
+      lbOpen: document.getElementById('lbOpen'),
+      lbClose: document.getElementById('lbClose')
+    };
+
+    // Deep link from URL params
+    const params = new URLSearchParams(location.search);
+    if(params.has('q')) state.q = params.get('q');
+    if(params.has('type')) state.type = (params.get('type')||'').toLowerCase();
+    if(params.has('sort')) state.sort = params.get('sort')==='asc'?'asc':'desc';
+    if(params.has('page')) state.page = Math.max(1, parseInt(params.get('page')||'1',10));
+
+    el.q.value = state.q; el.type.value = state.type; el.sort.value = state.sort;
+
+    // ===== RENDER =====
+    function applyFilters(){
+      let items = [...state.all];
+      if(state.q){
+        const qq = state.q.toLowerCase();
+        items = items.filter(x => (x.judul||'').toLowerCase().includes(qq) || (x.konten||'').toLowerCase().includes(qq));
+      }
+      if(state.type){ items = items.filter(x => x.tipe===state.type); }
+      items.sort((a,b)=> state.sort==='asc' ? (toDate(a.tanggal)-toDate(b.tanggal)) : (toDate(b.tanggal)-toDate(a.tanggal)) );
+      return items;
+    }
+
+    function render(){
+      const items = applyFilters();
+      const total = items.length;
+      const pages = Math.max(1, Math.ceil(total/state.per));
+      state.page = Math.min(state.page, pages);
+      const start = (state.page-1)*state.per;
+      const slice = items.slice(start, start+state.per);
+
+      // counter
+      el.counter.textContent = total + ' item';
+
+      // list
+      el.list.innerHTML='';
+      if(!slice.length){
+        el.list.innerHTML = '<div class="card"><div class="p muted">Belum ada data yang cocok.</div></div>';
+      } else {
+        slice.forEach(it=>{
+          const d = document.createElement('div');
+          if(it.tipe==='poster' && it.gambar){
+            d.className='card';
+            const p=document.createElement('div'); p.className='p';
+            const a=document.createElement('a'); a.href=it.href||it.gambar; if(/^https?:/i.test(a.href)){a.target='_blank';a.rel='noopener'}; a.className='poster';
+            a.innerHTML = `<img src="${it.gambar}" alt="${it.judul?it.judul:''}">`;
+            a.addEventListener('click', (e)=>{ if(!it.href){ e.preventDefault(); openLightbox(it); } });
+            const h=document.createElement('h3'); h.className='title'; h.textContent=it.judul||'Poster';
+            const dt=document.createElement('div'); dt.className='muted'; dt.textContent=it.tanggal? new Date(it.tanggal).toLocaleDateString('ja-JP',{year:'numeric',month:'short',day:'numeric'}):'';
+            p.appendChild(a); p.appendChild(h); p.appendChild(dt); d.appendChild(p);
+          } else {
+            d.className='card post-card';
+            const p=document.createElement('div'); p.className='p';
+            const h=document.createElement('h3'); h.className='title'; h.textContent=it.judul||'Info';
+            const ex=document.createElement('p'); ex.className='muted'; ex.textContent=it.konten||'';
+            const dt=document.createElement('div'); dt.className='muted'; dt.textContent=it.tanggal? new Date(it.tanggal).toLocaleDateString('ja-JP',{year:'numeric',month:'short',day:'numeric'}):'';
+            p.appendChild(h); p.appendChild(ex); p.appendChild(dt);
+            if(it.href){ const a=document.createElement('a'); a.className='btn'; a.href=it.href; a.textContent='Selengkapnya'; if(/^https?:/i.test(a.href)){a.target='_blank';a.rel='noopener'}; p.appendChild(a); }
+            d.appendChild(p);
+          }
+          el.list.appendChild(d);
+        });
+      }
+
+      // pager
+      renderPager(pages);
+
+      // sync url
+      const qp = new URLSearchParams();
+      if(state.q) qp.set('q', state.q);
+      if(state.type) qp.set('type', state.type);
+      if(state.sort!=='desc') qp.set('sort', state.sort);
+      if(state.page>1) qp.set('page', String(state.page));
+      const qs = qp.toString();
+      history.replaceState(null, '', qs?('?'+qs):location.pathname);
+    }
+
+    function renderPager(pages){
+      el.pager.innerHTML='';
+      if(pages<=1) return;
+      const mkBtn=(label, page, disabled=false, active=false)=>{
+        const b=document.createElement('button'); b.textContent=label; if(disabled) b.disabled=true; if(active) b.classList.add('active'); b.addEventListener('click',()=>{ state.page=page; render(); }); return b;
+      };
+      el.pager.appendChild(mkBtn('«', 1, state.page===1));
+      el.pager.appendChild(mkBtn('‹', Math.max(1,state.page-1), state.page===1));
+      const around=2; const start=Math.max(1, state.page-around); const end=Math.min(pages, state.page+around);
+      for(let i=start;i<=end;i++){ el.pager.appendChild(mkBtn(String(i), i, false, i===state.page)); }
+      el.pager.appendChild(mkBtn('›', Math.min(pages,state.page+1), state.page===pages));
+      el.pager.appendChild(mkBtn('»', pages, state.page===pages));
+    }
+
+    // ===== Lightbox =====
+    function openLightbox(it){
+      el.lbImg.src = it.gambar; el.lbTitle.textContent = it.judul||'Poster'; el.lbOpen.href = it.gambar;
+      el.lb.removeAttribute('hidden'); el.lb.setAttribute('aria-hidden','false');
+    }
+    function closeLightbox(){ el.lb.setAttribute('aria-hidden','true'); el.lb.setAttribute('hidden',''); el.lbImg.src=''; }
+    el.lbClose.addEventListener('click', closeLightbox);
+    el.lb.addEventListener('click', (e)=>{ if(e.target===el.lb) closeLightbox(); });
+    window.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeLightbox(); });
+
+    // ===== INIT =====
+    async function init(){
+      try{
+        const rows = await fetchCSV(INFO_CSV_URL);
+        const items = rows.map(norm).filter(x=>x.judul||x.konten||x.gambar);
+        state.all = items;
+      }catch(err){
+        console.warn('Gagal memuat INFO_CSV, gunakan contoh:', err);
+        state.all = [
+          {tipe:'poster', judul:'Poster Contoh Kajian', tanggal:new Date().toISOString().slice(0,10), gambar:'https://picsum.photos/1000/600?random=3', href:''},
+          {tipe:'tulisan', judul:'Perubahan Jadwal Kajian', tanggal:new Date().toISOString().slice(0,10), konten:'Kajian Sabtu diundur menjadi 20:00 JST.'}
+        ];
+      }
+      render();
+    }
+
+    // events
+    el.q.addEventListener('input', ()=>{ state.q = el.q.value.trim(); state.page=1; render(); });
+    el.type.addEventListener('change', ()=>{ state.type = el.type.value; state.page=1; render(); });
+    el.sort.addEventListener('change', ()=>{ state.sort = el.sort.value; state.page=1; render(); });
+
+    init();
+  </script>
+</body>
+</html>
