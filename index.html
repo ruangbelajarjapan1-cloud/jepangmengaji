@@ -89,6 +89,12 @@
     .info-grid .poster img{width:100%;height:240px;object-fit:cover}
     .info-grid .post-card{background:var(--card);border:1px solid var(--border);border-radius:1rem;box-shadow:var(--shadow)}
     .info-grid .post-card .p{padding:1rem}
+    /* Typography rapi untuk konten tulisan */
+    .info-body{line-height:1.75;white-space:normal;text-wrap:pretty;word-break:break-word}
+    .info-body p{margin:.35rem 0}
+    .info-body ul{margin:.35rem 0 .55rem 1.2rem;padding:0}
+    .info-body li{margin:.2rem 0}
+    .info-body a{text-decoration:underline}
   </style>
 </head>
 <body>
@@ -107,9 +113,7 @@
 
       <div class="nav-center">
         <nav class="nav-links" aria-label="Navigasi utama">
-          <a href="#info">Info Terbaru</a>
-          <a href="info.html">Halaman Info</a>
-          <a href="#artikel">Artikel</a>
+          <a href="#info">Info Terbaru</a>          <a href="#artikel">Artikel</a>
           <a href="#kajian">Info Kajian</a>
           <a href="#live">Live</a>
           <a href="live.html">Halaman Live</a>
@@ -132,9 +136,7 @@
     <!-- drawer mobile -->
     <div id="drawer">
       <div class="menu">
-        <a href="#info">Info Terbaru</a>
-        <a href="info.html">Halaman Info</a>
-        <a href="#artikel">Artikel</a>
+        <a href="#info">Info Terbaru</a>        <a href="#artikel">Artikel</a>
         <a href="#kajian">Info Kajian</a>
         <a href="#live">Live</a>
         <a href="live.html">Halaman Live</a>
@@ -159,9 +161,7 @@
         <p class="muted">Artikel, info kajian sunnah, live YouTube, dan donasi kegiatan dakwah di Jepang.</p>
         <div class="flex" style="flex-wrap:wrap;gap:.5rem">
           <a class="btn primary" href="#kajian">📅 Lihat Kajian</a>
-          <a class="btn" href="#info">🆕 Info Terbaru</a>
-          <a class="btn" href="info.html">📰 Halaman Info</a>
-          <a class="btn" href="#artikel">📖 Artikel</a>
+          <a class="btn" href="#info">🆕 Info Terbaru</a>          <a class="btn" href="#artikel">📖 Artikel</a>
           <a class="btn" href="live.html">▶️ Live</a>
           <a class="btn" href="arsip.html">🗂️ Arsip</a>
         </div>
@@ -376,6 +376,7 @@
     const ARTICLES_CSV_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vQiIOueuc-YygpdulT9x9ZjJUA2jlaWXu2uGzwgHcugNebW5HLjR66luq3kHmqDvTmNJlSjpjsIQ6PG/pub?gid=0&single=true&output=csv";
     const KAJIAN_CSV_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vQiIOueuc-YygpdulT9x9ZjJUA2jlaWXu2uGzwgHcugNebW5HLjR66luq3kHmqDvTmNJlSjpjsIQ6PG/pub?gid=450885199&single=true&output=csv";
     const INFO_CSV_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vQiIOueuc-YygpdulT9x9ZjJUA2jlaWXu2uGzwgHcugNebW5HLjR66luq3kHmqDvTmNJlSjpjsIQ6PG/pub?gid=1656910010&single=true&output=csv";
+    const INFO_HIGHLIGHT_COUNT=3;
 
     /* ====== YOUTUBE CONFIG ====== */
     const CHANNEL_ID = "UC3h0lpsfwETKD9v2mY6WVTQ";
@@ -495,25 +496,71 @@
     }
 
     /* ===== INFO TERBARU helpers ===== */
+    function escapeHtml(s){return String(s).replace(/[&<>"']/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]));}
+    function linkify(s){return s.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1<\/a>');}
+    function formatInfoHTML(text){
+      if(!text) return '';
+      const lines = String(text).replace(/\r\n/g,'\n').split('\n');
+      let html='', inList=false, para=[];
+      const flushPara=()=>{ if(para.length){ html += `<p>${linkify(escapeHtml(para.join(' ')))}</p>`; para=[]; } };
+      for(const raw of lines){
+        const line = raw.trim();
+        if(!line){ flushPara(); if(inList){ html+='</ul>'; inList=false; } continue; }
+        const m = line.match(/^[-–•*]\s+(.*)$/);
+        if(m){ flushPara(); if(!inList){ html+='<ul>'; inList=true; } html += `<li>${linkify(escapeHtml(m[1]))}</li>`; }
+        else { if(inList){ html+='</ul>'; inList=false; } para.push(line); }
+      }
+      flushPara(); if(inList) html+='</ul>';
+      return html;
+    }
+
+    function firstVal(obj, keys){
+      for(const key of keys){
+        const v = obj[key];
+        if(v && String(v).trim()) return String(v).trim();
+      }
+      return '';
+    }
+    function youtubeIdFromUrl(s){
+      if(!s) return '';
+      const m = String(s).match(/(?:v=|youtu\.be\/|embed\/)([A-Za-z0-9_-]{11})/);
+      return m? m[1] : '';
+    }
+    function fixImageUrl(u){
+      if(!u) return '';
+      let url = String(u).trim();
+      let m = url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
+      if(m){ return `https://drive.google.com/uc?export=view&id=${m[1]}`; }
+      m = url.match(/drive\.google\.com\/open\?id=([^&]+)/);
+      if(m){ return `https://drive.google.com/uc?export=view&id=${m[1]}`; }
+      m = url.match(/drive\.google\.com\/uc\?id=([^&]+)/);
+      if(m){ return `https://drive.google.com/uc?export=view&id=${m[1]}`; }
+      return url;
+    }
+
     function normalizeInfoRow(r){
+      const href = firstVal(r, ['href','link','url']);
+      let gambar = firstVal(r, ['gambar','image','img','foto','poster','posterurl']);
+      if(!gambar && href){ const yid = youtubeIdFromUrl(href); if(yid) gambar = `https://i.ytimg.com/vi/${yid}/hqdefault.jpg`; }
       return {
         tipe: (r.tipe||r.type||'').toLowerCase(),
         judul: r.judul||r.title||'',
         tanggal: r.tanggal||r.date||'',
-        gambar: r.gambar||r.image||'',
+        gambar: fixImageUrl(gambar),
         konten: r.konten||r.content||'',
-        href: r.href||r.link||'',
+        href: href,
       };
+    };
     }
     function renderInfos(list){
       const wrap=document.getElementById('infos'); wrap.innerHTML='';
       if(!list.length){wrap.innerHTML='<div class="card"><div class="p muted">Belum ada info terbaru.</div></div>'; return;}
-      list.slice(0,6).forEach(it=>{
+      list.slice(0, INFO_HIGHLIGHT_COUNT).forEach(it=>{
         const d = document.createElement('div');
         if(it.tipe==='poster' && it.gambar){
           d.className='card'; const p=document.createElement('div'); p.className='p';
           const imgWrap=document.createElement('a'); imgWrap.className='poster'; imgWrap.href=it.href || it.gambar; if(/^https?:/i.test(imgWrap.href)){imgWrap.target='_blank';imgWrap.rel='noopener'}
-          imgWrap.innerHTML = `<img src="${it.gambar}" alt="${it.judul?it.judul:''}">`;
+          const img=document.createElement('img'); img.alt=it.judul||'Poster'; img.src=it.gambar; img.loading='lazy'; img.decoding='async'; img.onerror=()=>{ img.src='https://picsum.photos/800/500?random=11'; }; imgWrap.appendChild(img);
           const title=document.createElement('h3'); title.style.margin='.6rem 0 .2rem'; title.textContent=it.judul||'Poster';
           const dt=document.createElement('div'); dt.className='muted'; dt.textContent=it.tanggal?new Date(it.tanggal).toLocaleDateString('ja-JP',{year:'numeric',month:'short',day:'numeric'}):'';
           p.appendChild(imgWrap); p.appendChild(title); p.appendChild(dt); d.appendChild(p);
@@ -521,7 +568,7 @@
           d.className='post-card';
           const p=document.createElement('div'); p.className='p';
           const title=document.createElement('h3'); title.textContent=it.judul||'Info';
-          const ex=document.createElement('p'); ex.className='muted'; ex.textContent=it.konten||'';
+          const ex=document.createElement('div'); ex.className='info-body muted'; ex.innerHTML = formatInfoHTML(it.konten||'');
           const dt=document.createElement('div'); dt.className='muted'; dt.textContent=it.tanggal?new Date(it.tanggal).toLocaleDateString('ja-JP',{year:'numeric',month:'short',day:'numeric'}):'';
           p.appendChild(title); p.appendChild(ex); p.appendChild(dt);
           if(it.href){ const a=document.createElement('a'); a.className='btn right'; a.href=it.href; a.textContent='Selengkapnya'; if(/^https?:/i.test(a.href)){a.target='_blank';a.rel='noopener'}; p.appendChild(a); }
@@ -564,7 +611,7 @@
     }
     function renderVideosHome(list){
       const wrap=document.getElementById('videosHome'); wrap.innerHTML='';
-      const show = list.slice(0,6);
+      const show = list.slice(0, INFO_HIGHLIGHT_COUNT);
       if(!show.length){wrap.innerHTML='<div class="card"><div class="p muted">Gagal memuat video.</div></div>';return}
       show.forEach(v=>{
         const a=document.createElement('a'); a.className='card'; a.href=v.link; a.target='_blank'; a.rel='noopener';
